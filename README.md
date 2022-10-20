@@ -4,3 +4,12 @@ A piece of software for listening to music built on a database.
 <br>
 <h3> Current State </h3>
 Conceptual and logical data models are complete, recently started setup
+<h3> Phase 3 Requirements </h3>
+Users will be able to create new accounts and access via login
+Users will be able to create collections of music
+Users will be able to see the list of all their collections by name in ascending order
+Users will be able to search for songs by name, artist, album, and genre
+Users can sort by song name, artist’s name, genre, and released year
+Users can add and delete albums, and songs from their collection
+Users can modify the name of a collection. They can also delete an entire collection
+Users can listen to a song individually or it can play an entire collection
