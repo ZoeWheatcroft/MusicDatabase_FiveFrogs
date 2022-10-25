@@ -73,4 +73,4 @@ def execute_query(str):
 
 if __name__ == '__main__': 
     #execute_start("SELECT * FROM user")
-    print(execute_query("SELECT * FROM ArtistCreatesSong"))
+    print(execute_query("SELECT * FROM "))
