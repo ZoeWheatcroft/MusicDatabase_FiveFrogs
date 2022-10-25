@@ -30,6 +30,7 @@ def execute_start(str):
             curs = conn.cursor()
             curs.execute(str)
             print("Database connection established")
+            conn.commit()
             conn.close()
     except:
         print("Connection failed")
