@@ -16,7 +16,6 @@ def login():
     elif len(lst) == 0: 
         cond = input("Account not found. Would you like to create an acccount? ")
         if cond.capitalize()[0] == "Y": 
-            username = input("Enter your new username: ")
             email = input("Enter your email address: ")
             first = input("Enter your first name: ")
             last = input("Enter your last name: ")
@@ -24,7 +23,6 @@ def login():
             creation_time = str(datetime.datetime.now())
             sqlstring = "INSERT into users (username, creation_date, first_name, last_name, email, password, last_access) VALUES('" + username + "', '" + creation_time + "', '" + first + "', '" +  last + "', '" +  email+ "', '" + password+ "', '" + creation_time + "');"
             dbaccess.execute_start(sqlstring)
-
             return username
     return None
 
