@@ -60,7 +60,7 @@ def search_album(username):
         print(len(lst), "Songs found!")
         if len(lst) > 0: 
             for i in lst: 
-                print("Artist Name: %10s | Song Title: %18s | Length (sec): %2d | Number of plays: %3d | Album Name: %10s " % (i[0], i[1], i[2], i[3]))
+                print("Artist Name: %14s | Song Title: %18s | Length (sec): %2d | Number of plays: %3d | Album Name: %10s " % (i[0], i[1], i[2], i[3], i[4]))
         c = input("Would you like to search again? ")
         if c.upper()[0] == "N": 
             quit = True
@@ -82,15 +82,37 @@ def search_genre(username):
         print(len(lst), "Songs found!")
         if len(lst) > 0: 
             for i in lst: 
-                print("Genre Name: %10s | Artist Name: %10s | Song Title: %18s | Length (sec): %2d | Number of plays: %3d | Album Name: %10s " % (i[0], i[1], i[2], i[3]))
+                print("Genre Name: %6s | Artist Name: %14s | Song Title: %18s | Length (sec): %2d | Number of plays: %3d | Album Name: %10s " % (i[0], i[1], i[2], i[3], i[4], i[5]))
         c = input("Would you like to search again? ")
         if c.upper()[0] == "N": 
             quit = True
     return lst
 
+def search_screen(username): 
+    print("How would you like to search for a song? ")
+    print("1. By name")
+    print("2. By artist")
+    print("3. By album")
+    print("4. By genre")
+    num = input("Enter your selection here: [1, 2, 3, 4] ")
+    valid = False
+    while not valid:
+        if num == "1": 
+            valid = True
+            search_name(username)
+        elif num == "2": 
+            valid = True
+            search_artist(username)
+        elif num == "3": 
+            valid = True
+            search_album(username)
+        elif num == "4": 
+            valid = True
+            search_genre(username)
+        else: 
+            num = input("Incorrect value. Please try again: [1, 2, 3, 4] ")
+
+
 if __name__ == '__main__': 
     username = useraccess.login()
-    search_name(username)
-    search_artist(username)
-    search_album(username)
-    search_genre(username)
+    search_screen(username)
