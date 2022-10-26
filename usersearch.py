@@ -1,4 +1,5 @@
 import dbaccess
+import useraccess
 
 # search by name
 def search_name(username): 
@@ -17,3 +18,8 @@ def search_name(username):
         if c.upper()[0] == "N": 
             quit = True
     return lst
+
+
+if __name__ == '__main__':
+    username = useraccess.login()
+    search_name(username)
