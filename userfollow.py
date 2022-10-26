@@ -4,28 +4,24 @@ import usersearch
 
 def follow_user(username):
     quit = False
-    lst = None
     while(not quit):
         word = input("What is the email of the user that you would like to follow? ")
         # TODO: SQL NEEDS TO CHECK IF THE USER IS ALREADY BEING FOLLOWED
-        lst = dbaccess.execute_query("INSERT INTO userfollowsuser (username, follows) \
+        dbaccess.execute_start("INSERT INTO userfollowsuser (username, follows) \
                 VALUES ('"+ username +"', '"+ str(word) +"')")
         c = input("Would you like to follow another user? ")
         if c.upper()[0] == 'N':
             quit = True
-    return lst
 
 def unfollow_user(username):
     quit = False
-    lst = None
     while(not quit):
         word = input("What is the email of the user that you would like to unfollow? ")
-        lst = dbaccess.execute_query("DELETE FROM userfollowsuser \
+        dbaccess.execute_start("DELETE FROM userfollowsuser \
                 WHERE username = '"+ username +"' AND follows = '"+ str(word) +"'")
         c = input("Would you like to unfollow another user? ")
         if c.upper()[0] == 'N':
             quit = True
-    return lst
 
 def follow_screen(username):
     print("What would you like to do?")
