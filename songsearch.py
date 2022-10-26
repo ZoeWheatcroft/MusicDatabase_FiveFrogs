@@ -88,9 +88,31 @@ def search_genre(username):
             quit = True
     return lst
 
+def search_screen(username): 
+    print("How would you like to search for a song? ")
+    print("1. By name")
+    print("2. By artist")
+    print("3. By album")
+    print("4. By genre")
+    num = input("Enter your selection here: [1, 2, 3, 4] ")
+    valid = False
+    while not valid:
+        if num == "1": 
+            valid = True
+            search_name(username)
+        elif num == "2": 
+            valid = True
+            search_artist(username)
+        elif num == "3": 
+            valid = True
+            search_album(username)
+        elif num == "4": 
+            valid = True
+            search_genre(username)
+        else: 
+            num = input("Incorrect value. Please try again: [1, 2, 3, 4] ")
+
+
 if __name__ == '__main__': 
     username = useraccess.login()
-    search_name(username)
-    search_artist(username)
-    search_album(username)
-    search_genre(username)
+    search_screen(username)
