@@ -20,7 +20,7 @@ def playlist_options(user):
             valid = True
             p.create_playlist(user)
         elif num == "3":
-            break
+            return 0
         else:
             num = input("Incorrect value. Please try again: [1, 2, 3] ")
             
@@ -39,7 +39,7 @@ def main():
             print("3. View playlist options")
             print("4. Follow/unfollow a friend")
             print("5. Exit")
-            num = input("[1, 2, 3, 4]: ")
+            num = input("[1, 2, 3, 4, 5]: ")
             if num == "1":
                 valid = True
                 s.search_screen(user)
@@ -53,7 +53,7 @@ def main():
                 valid = True
                 f.follow_screen(user)
             elif num == "5":
-                break
+                return 0
             else:
                 num = input("Incorrect value. Please try again: [1, 2, 3, 4] ")
         yn = input("Do you want to do something else? [y/n] ")
