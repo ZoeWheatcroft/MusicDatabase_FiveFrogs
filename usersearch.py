@@ -14,7 +14,7 @@ def search_email(username):
         print(len(lst), "Users Found!")
         if len(lst) > 0: 
             for i in lst: 
-                print("User Name: %16u | Email: %18u" % (i[0], i[1]))
+                print("User Name: %16s | Email: %18s" % (i[0], i[1]))
         c = input("Would you like to search again? ")
         if c.upper()[0] == "N": 
             quit = True
