@@ -1,10 +1,20 @@
+"""
+The main function for the playlist is access_playlist
+
+Access_playlist is called by a wrapper function called play_playlist 
+
+All other functions are helper functions for access_playlist
+"""
+
 from turtle import pos
 import dbaccess
 import useraccess
 import songsearch
 import playsong
 
-
+"""
+print off list of songs, pass in list as param
+"""
 def print_songs(songs):
     print("---")
     print("SONGS: ")
@@ -16,7 +26,12 @@ def print_songs(songs):
 
 """
 Wrapper function for access_playlist
-Asks which playlist they're accessing 
+Asks which playlist to open and then accesses it w/ access_playlist
+Uses name of playlist to get first playlist under that name 
+KNOWN BUGS: 
+-can access other user's playlists
+-no check to see if playlist exists under that name
+-no check to see if there are multiple playlists under that name
 """
 def play_playlist(user):
     inp = input("What's the name of the playlist? ")
@@ -24,16 +39,15 @@ def play_playlist(user):
     #should do a check here to see if there's multiple under same name
     access_playlist(user, int(str(lst[0][0])))
 
+"""
+Sam's stuff, have not read
+"""
 def remove_album_from_playlist(playlist_id):
     quit = False
     while(not quit):
         word = input("What is the name of the album that you would like to remove? ")
         # First, find the album with the given name
         album = dbaccess.execute_query("SELECT album_id FROM album WHERE album_name = '%s'"%(word))
-        # If there are multiple albums with the given name, ask for the artist of the album
-        if len(album) > 1:
-            artist = input("Multiple albums found with that name, please specify artist: ")
-            album = dbaccess.execute_query("SELECT album_id FROM artistcreatesalbum WHERE artist_name = '%s'"%(artist))
         if len(album) == 1:
             songs = dbaccess.execute_query("SELECT song_id FROM albumcontainssong WHERE album_id = '%s'"%(album))
             # Now remove the songs from the playlist
@@ -49,10 +63,19 @@ def remove_album_from_playlist(playlist_id):
             if c.upper()[0] == 'N':
                 quit = True
 
+"""
+asks the user which song on the playlist they'd like to play
+gets list of songs with that name and list of songs on playlist 
+look for a match and play it
+tell the user the song is not on the playlist if there is no match
+KNOWN BUGS:
+-does not check if either list has length > 0 before iterating through it 
+-does not ask user *which* song under that name they mean
+"""
 def play_song_on_playlist(p_id, user):
     #get the name of the song that's being player
     s_name = input("Which song? ")
-    #in the case that there's multiple songs on a playlist under the same name, we'll just play the first result
+    #get list of songs under that name
     lst_possible_matches = dbaccess.execute_query("SELECT song_id FROM song WHERE title = '%s'" % s_name)
     #check that song is in the play list
     lst_songsinplaylist = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong WHERE playlist_id = '%s'" % p_id)
@@ -69,6 +92,9 @@ def play_song_on_playlist(p_id, user):
         print("Sorry, that song isn't in your playlist!")
     #playsong.play_songID(s_id, user)
 
+"""
+add a song into a playlist
+"""
 def insert_into_playlist(p_id):
     s_name = input("What's the name of the song you'd like to add? ")
     s_id = dbaccess.execute_query("SELECT song_id FROM song WHERE title = '%s'" % s_name)
@@ -76,6 +102,9 @@ def insert_into_playlist(p_id):
     dbaccess.execute_start(sqlstring) 
     print("inserted song!")
 
+"""
+remove a song from the playlist
+"""
 def remove_song_from_playlist(p_id, user):
     inp = input("What's the name of the song you'd like to remove? ")
     possible_matches = dbaccess.execute_query("SELECT song_id FROM song WHERE title = '%s'" % inp)
@@ -92,6 +121,10 @@ def remove_song_from_playlist(p_id, user):
                 if(p[0] == s[0]):
                     dbaccess.execute_start("DELETE FROM playlistcontainssong WHERE song_id = '%s'" % str(p[0]))
     
+"""
+print options of actions on playlist
+UPDATE IF OPTIONS CHANGE
+"""
 def print_options():
     print("")
     print("0- list songs")
@@ -101,6 +134,9 @@ def print_options():
     print("4- delete song")
     print("5- exit")
 
+"""
+main function 
+"""
 def access_playlist(user, playlist_id): 
     #get the playlist name 
     lst = dbaccess.execute_query("SELECT playlist_name from playlist where playlist_id = '%s'" % (playlist_id))
@@ -110,6 +146,7 @@ def access_playlist(user, playlist_id):
     print('currently accessing playlist: ', pname)
     print_options()
     num = input("Enter your selection here: ")
+    #get player actions and perform while valid = true
     valid = False
     while not valid:
         #print out the songs
