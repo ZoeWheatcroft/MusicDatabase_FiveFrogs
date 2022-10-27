@@ -12,6 +12,27 @@ def print_songs(songs):
         print(song_name)
     print("---")
 
+def remove_album_from_playlist(playlist_id):
+    quit = False
+    while(not quit):
+        word = input("What is the name of the album that you would like to remove? ")
+        # First, find the album with the given name
+        album = dbaccess.execute_query("SELECT album_id FROM album WHERE album_name = '%s'"%(word))
+        if len(album) == 1:
+            songs = dbaccess.execute_query("SELECT song_id FROM albumcontainssong WHERE album_id = '%s'"%(album))
+            # Now remove the songs from the playlist
+            if len(songs) != 0:
+                quit = True
+                for s in songs:
+                    dbaccess.execute_start("DELETE FROM playlistcontainssong WHERE song_id = '"+ s +"' AND playlist_id = '"+ playlist_id +"'")
+            else:
+                print("There are no songs in the playlist from this album, please try again")
+        elif len(album) == 0:
+            print("There is no album with this name, would you like to try again?")
+            c = input("[Y] / [N]")
+            if c.upper()[0] == 'N':
+                quit = True
+
 
 def access_playlist(user, playlist_id): 
     #get the playlist name 
