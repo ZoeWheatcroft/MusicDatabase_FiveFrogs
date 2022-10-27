@@ -3,6 +3,7 @@ import useraccess
 import songsearch
 import playsong
 
+
 def print_songs(songs):
     print("---")
     print("SONGS: ")
@@ -12,12 +13,20 @@ def print_songs(songs):
         print(song_name)
     print("---")
 
+def play_playlist(user):
+    inp = input("What's the name of the playlist? ")
+    lst = dbaccess.execute_query("SELECT playlist_id FROM playlist WHERE playlist_name = '%s'" % (inp))
+    if(len(lst) != 1)
+    for p in lst:
+        print(p)
+    access_playlist(user, str(lst[0][0]))
+
 
 def access_playlist(user, playlist_id): 
     #get the playlist name 
     lst = dbaccess.execute_query("SELECT playlist_name from playlist where playlist_id = '%s'" % (playlist_id))
     pname = lst[0]
-    songs = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong WHERE playlist_id = '%d'" % int(playlist_id))
+    songs = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong WHERE playlist_id = '%s'" % playlist_id)
     print_songs(songs);
     print('currently accessing playlist: ', pname)
     print("")
@@ -32,7 +41,7 @@ def access_playlist(user, playlist_id):
     while not valid:
         #print out the songs
         if num == "0":
-            songs = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong WHERE playlist_id = '%d'" % int(playlist_id))
+            songs = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong WHERE playlist_id = '%s'" % playlist_id)
             print_songs(songs)
         #play song
         elif num == "1": 
@@ -40,7 +49,7 @@ def access_playlist(user, playlist_id):
             s_id = input("Which song?")
             #check that song is in the play list
             lst = []
-            lst = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong WHERE playlist_id = '%d'" % int(playlist_id))
+            lst = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong WHERE playlist_id = '%s'" % playlist_id)
             song_in_playlist = False
             #I wassss doing a check to see if the song was actually in the play list but it's not working and i got other stuff to do
             #will come back if i have time
@@ -59,10 +68,10 @@ def access_playlist(user, playlist_id):
         elif num == "2": 
             inp = input("Sort songs (1)ascendingly or (2)descendingly? (1, 2) ")
             if(inp == "1"):
-                songs = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong WHERE playlist_id = '%d' ORDER BY song_id ASC" % int(playlist_id))
+                songs = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong WHERE playlist_id = '%d' ORDER BY song_id ASC" % playlist_id)
             
             else:
-                songs = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong WHERE playlist_id = '%d' ORDER BY song_id DESC" % int(playlist_id))
+                songs = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong WHERE playlist_id = '%d' ORDER BY song_id DESC" % playlist_id)
             
             print_songs(songs)
             valid = False
@@ -101,4 +110,5 @@ def access_playlist(user, playlist_id):
     #play_songID(lst[0][0], user)
 
 if __name__ == '__main__': 
-    access_playlist("celery", 307)
+    play_playlist("celery")
+    
