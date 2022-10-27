@@ -34,26 +34,28 @@ def create_playlist(username):
                 break
 
 def view_playlist(username):
-    
+    #check if user has any playlists or not 
     show_playlist = "SELECT playlist_id from usercreatesplaylist where username = " + "'" + username + "'"
-    user_playlists = dbaccess.execute_query(show_playlist)
-    #print(user_playlists)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+    user_playlists = dbaccess.execute_query(show_playlist)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
     if not user_playlists: 
         print("No playlists created")
     else: 
-        for playlist in user_playlists: 
-            playlist_info = "SELECT p.playlist_name, \
-                                (SELECT count(c.song_id) \
-                                    FROM playlistcontainssong c \
-                                    WHERE p.playlist_id = c.playlist_id) \
-                            FROM playlist p \
-                                WHERE p.playlist_id = '" + str(playlist[0]) + "'"
-            info = dbaccess.execute_query(playlist_info)
-            for i in info: 
-                print(i)
+        playlist_info = "SELECT p.playlist_name, COUNT(c.song_id), SUM(s.length)\
+                            FROM playlist AS p \
+                            LEFT JOIN playlistcontainssong AS c ON (p.playlist_id = c.playlist_id)\
+                            LEFT JOIN song AS s ON (s.song_id = c.song_id)\
+                            LEFT JOIN usercreatesplaylist AS u on (p.playlist_id = u.playlist_id) \
+                            WHERE u.username = '" + username + "'" +\
+                            "GROUP BY p.playlist_id \
+                            ORDER BY p.playlist_name ASC"
+
+        all_playlists = dbaccess.execute_query(playlist_info)
+        for playlist in all_playlists: 
+            print(playlist)
 
 if __name__ == '__main__': 
     username = useraccess.login()
     #create_playlist(username)
     #create_playlist("hi")
     view_playlist(username)
+    #view_playlist("lh5844")
