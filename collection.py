@@ -67,6 +67,9 @@ def view_playlist(username):
         for playlist in all_playlists: 
             duration = convert_mins(playlist[2])
             print("%16s | %9s songs | %8s" % (playlist[0], playlist[1], duration))
+        
+        your_playlist_screen(username, all_playlists)
+
         return all_playlists
 
 def rename_playlist(username, all_playlists):
@@ -138,6 +141,30 @@ def delete_playlist(username, all_playlists):
                     quit = True
                     break
 
+def your_playlist_screen(username, all_playlists):
+    valid = False
+    while not valid:
+        print("Your Playlist Options:")
+        print("1. Select a playlist")
+        print("2. Rename a playlist")
+        print("3. Delete a playlist")
+        print("4. Exit")
+        num = input("[1, 2, 3, 4]: ")
+        if num == "1":
+            valid = True
+            #view_playlist(username)
+            print("work in progress but should lead to list of songs under a playlist")
+        elif num == "2":
+            valid = True
+            rename_playlist(username, all_playlists)
+        elif num == "3":
+            valid = True
+            delete_playlist(username, all_playlists)
+        elif num == "4":
+            break
+        else:
+            num = input("Incorrect value. Please try again: [1, 2, 3, 4] ")
+
 if __name__ == '__main__': 
     #username = useraccess.login()
     #create_playlist("lh5844")
@@ -146,4 +173,4 @@ if __name__ == '__main__':
     all_playlists = view_playlist("lh5844")
     
     #rename_playlist("lh5844", all_playlists)
-    delete_playlist("lh5844", all_playlists)
+    #delete_playlist("lh5844", all_playlists)
