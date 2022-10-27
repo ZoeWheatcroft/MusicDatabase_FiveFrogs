@@ -18,7 +18,7 @@ def search_name(username):
         if len(lst) > 0: 
             for i in lst: 
                 print("Artist Name: %16s | Song Title: %18s | Length (sec): %2d | Number of plays: %3d | Album Name: %10s " % (i[0], i[1], i[2], i[3], i[4]))
-        c = input("Would you like to search again? ")
+        c = input("Would you like to search again? [Y/N] ")
         if c.upper()[0] == "N": 
             quit = True
     return lst
@@ -39,7 +39,7 @@ def search_artist(username):
         if len(lst) > 0: 
             for i in lst: 
                 print("Artist Name: %10s | Song Title: %18s | Length (sec): %2d | Number of plays: %3d | Album Name: %10s " % (i[0], i[1], i[2], i[3], i[4]))
-        c = input("Would you like to search again? ")
+        c = input("Would you like to search again? [Y/N] ")
         if c.upper()[0] == "N": 
             quit = True
     return lst
@@ -61,7 +61,7 @@ def search_album(username):
         if len(lst) > 0: 
             for i in lst: 
                 print("Artist Name: %14s | Song Title: %18s | Length (sec): %2d | Number of plays: %3d | Album Name: %10s " % (i[0], i[1], i[2], i[3], i[4]))
-        c = input("Would you like to search again? ")
+        c = input("Would you like to search again? [Y/N] ")
         if c.upper()[0] == "N": 
             quit = True
     return lst
@@ -83,7 +83,7 @@ def search_genre(username):
         if len(lst) > 0: 
             for i in lst: 
                 print("Genre Name: %6s | Artist Name: %14s | Song Title: %18s | Length (sec): %2d | Number of plays: %3d | Album Name: %10s " % (i[0], i[1], i[2], i[3], i[4], i[5]))
-        c = input("Would you like to search again? ")
+        c = input("Would you like to search again? [Y/N] ")
         if c.upper()[0] == "N": 
             quit = True
     return lst
