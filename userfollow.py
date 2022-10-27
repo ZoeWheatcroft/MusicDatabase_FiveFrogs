@@ -103,13 +103,16 @@ def follow_screen(username):
         else:
             num = input("Incorrect value. Please try again: [1, 2, 3, 4, 5] ")
 
-def view_user_followlist(username):
-    #maybe make a function later to pretty print
-    dash_len = 36
+def print_list(list_name, dash_len):
     dash_str = "-" * dash_len
     print(dash_str)
-    print("%s" % ("~*~ Your User Following ~*~".center(dash_len)))
+    print("%s" % (list_name.center(dash_len)))
     print(dash_str)
+
+def view_user_followlist(username):
+    dash_len = 36
+    list_name = "~*~ Your User Following ~*~"
+    print_list(list_name, dash_len)
 
     show_followlist = "SELECT follows from userfollowsuser where username = '%s' \
                         ORDER BY follows ASC" % (username)
@@ -122,10 +125,8 @@ def view_user_followlist(username):
 
 def view_artist_followlist(username):
     dash_len = 36
-    dash_str = "-" * dash_len
-    print(dash_str)
-    print("%s" % ("~*~ Your Artist Following ~*~".center(dash_len)))
-    print(dash_str)
+    list_name = "~*~ Your Artist Following ~*~"
+    print_list(list_name, dash_len)
 
     show_followlist = "SELECT artist_name from userfollowsartist where username = '%s' \
                         ORDER BY artist_name ASC" % (username)
