@@ -37,7 +37,9 @@ Sam's stuff, have not read
 def remove_album_from_playlist(playlist_id):
     quit = False
     while(not quit):
-        word = input("What is the name of the album that you would like to remove? ")
+        word = input("What is the name of the album that you would like to remove? (or Q to quit): ")
+        if word.upper()[0] == "Q":
+            break
         # First, find the album with the given name
         album = dbaccess.execute_query("SELECT album_id FROM album WHERE album_name = '%s'"%(word))
         if len(album) > 1:
@@ -45,16 +47,16 @@ def remove_album_from_playlist(playlist_id):
             artist = input("Multiple albums found with that name, please specify artist: ")
             album = dbaccess.execute_query("SELECT album_id FROM artistcreatesalbum WHERE artist_name = '%s'"%(artist))
         if len(album) == 1:
-            songs = dbaccess.execute_query("SELECT song_id FROM albumcontainssong WHERE album_id = '%s'"%(album))
+            songs = dbaccess.execute_query("SELECT song_id FROM albumcontainssong WHERE album_id = '%s'"%(album[0]))
             # Now remove the songs from the playlist
             if len(songs) != 0:
                 quit = True
                 for song_id in songs:
-                    # Delete any songs from this album that are in the playlist
                     dbaccess.execute_start("DELETE FROM playlistcontainssong \
                                             WHERE song_id = '%s' \
                                             AND playlist_id = '%s'" 
-                                            % (song_id, playlist_id))
+                                            % (song_id[0], playlist_id))
+                print("Songs removed!")
             else:
                 print("There are no songs in this album, please try again.")
         elif len(album) == 0:
@@ -321,5 +323,5 @@ def playlist_screen(user, playlist_id):
             num = input("(h for options) Enter your selection here: ")
 
 if __name__ == '__main__': 
-    add_album_to_playlist(300)
+    remove_album_from_playlist(300)
     
