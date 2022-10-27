@@ -25,6 +25,10 @@ def remove_album_from_playlist(playlist_id):
         word = input("What is the name of the album that you would like to remove? ")
         # First, find the album with the given name
         album = dbaccess.execute_query("SELECT album_id FROM album WHERE album_name = '%s'"%(word))
+        # If there are multiple albums with the given name, ask for the artist of the album
+        if len(album) > 1:
+            artist = input("Multiple albums found with that name, please specify artist: ")
+            album = dbaccess.execute_query("SELECT album_id FROM artistcreatesalbum WHERE artist_name = '%s'"%(artist))
         if len(album) == 1:
             songs = dbaccess.execute_query("SELECT song_id FROM albumcontainssong WHERE album_id = '%s'"%(album))
             # Now remove the songs from the playlist
