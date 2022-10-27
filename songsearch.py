@@ -21,8 +21,8 @@ def search_name():
        
         if(u.keep_asking("Would you like to search again?")):
             quit = True
-
     return lst
+
 
 def search_artist():
     quit = False
@@ -65,6 +65,7 @@ def search_album():
             quit = True
     return lst
 
+
 def search_genre(): 
     quit = False
     lst = None
@@ -85,6 +86,7 @@ def search_genre():
         if(u.keep_asking("Would you like to search again?")):
             quit = True
     return lst
+
 
 def search_screen(): 
     print("How would you like to search for a song? ")

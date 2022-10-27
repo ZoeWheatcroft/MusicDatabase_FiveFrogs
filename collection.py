@@ -12,7 +12,7 @@ def create_playlist(username):
         #keeps generating new playlist_id if it already exists in table
         unique_bool = False
         while(not unique_bool):
-            random_id = r.randint(1, 99999) 
+            random_id = r.randint(1, 9999) 
             playlist_id = int('%i%i' % (30,random_id))
     
             sql_check = "SELECT playlist_id FROM playlist WHERE playlist_id = '%s'" % (playlist_id)
@@ -31,11 +31,13 @@ def create_playlist(username):
         if(u.keep_asking("Would you like to create another playlist?")):
             quit = True
 
+
 def convert_mins(secs):
     if secs == None: 
         return "0:00:00"
     duration = str(datetime.timedelta(seconds=secs))
     return duration
+
 
 def view_playlist(username):
     dash_len = 50
@@ -66,6 +68,7 @@ def view_playlist(username):
     
     print(line)
     your_playlist_screen(username)
+
 
 def rename_playlist(username):
     show_playlist = "SELECT playlist_id from usercreatesplaylist where username = '%s'" % (username)
@@ -98,6 +101,7 @@ def rename_playlist(username):
             if(u.keep_asking("Would you like to rename another playlist?")):
                 quit = True
     
+
 def delete_playlist(username):
     show_playlist = "SELECT playlist_id from usercreatesplaylist where username = '%s'" % (username)
     user_playlists = dbaccess.execute_query(show_playlist)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
@@ -130,6 +134,7 @@ def delete_playlist(username):
             if(u.keep_asking("Would you like to delete another playlist?")):
                 quit = True
 
+
 def your_playlist_screen(username):
     valid = False
     while not valid:
@@ -153,6 +158,7 @@ def your_playlist_screen(username):
             break
         else:
             num = input("Incorrect value. Please try again: [1, 2, 3, 4] ")
+
 
 if __name__ == '__main__': 
     #username = useraccess.login()

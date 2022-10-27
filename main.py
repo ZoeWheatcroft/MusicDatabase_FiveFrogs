@@ -5,6 +5,7 @@ import collection as p
 import userfollow as f
 import playsong as ps
 
+
 def playlist_options(user):
     valid = False
     while not valid:
@@ -24,6 +25,7 @@ def playlist_options(user):
         else:
             num = input("Incorrect value. Please try again: [1, 2, 3] ")
             
+
 def main():
     user = u.login()
     if user == None: 

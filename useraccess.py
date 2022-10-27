@@ -1,6 +1,7 @@
 import dbaccess
 import datetime
 
+
 def keep_asking(question):
     while(True):
         ans = input("%s [Y/N] " % (question))
@@ -9,6 +10,7 @@ def keep_asking(question):
         if (ans.upper() == "N" or ans.upper() == "NO"): 
             return True
         print("Invalid input: Type one of the following ['Y'/'Yes'/'N'/'No']")
+
 
 def login(): 
     username = input("Enter your username: ")
@@ -39,6 +41,7 @@ def login():
                 break
             print("Invalid input: Type one of the following ['Y'/'Yes'/'N'/'No']")
     return None
+
 
 if __name__ == '__main__': 
     print(login())
