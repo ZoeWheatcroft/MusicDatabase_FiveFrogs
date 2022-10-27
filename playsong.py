@@ -37,6 +37,15 @@ def play_song(user):
         return 0
     play_songID(lst[0][0], user)
 
+
+def play_playlistbyid(user, play_id): 
+    # select all songs in the playlist
+    lst = dbaccess.execute_query("SELECT song_id\
+                FROM playlistcontainssong \
+                WHERE playlist_id = '%s'" % ( play_id))
+    for i in lst: 
+        play_songID(i[0], user)
+
 if __name__ == '__main__': 
     username = useraccess.login()
-    play_song(username)
+    play_playlistbyid(username, "304262")
