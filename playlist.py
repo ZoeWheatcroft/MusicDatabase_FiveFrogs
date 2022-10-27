@@ -5,13 +5,20 @@ import songsearch
 import playsong
 
 
-def print_songs(songs):
+def print_songs(play_id):
+    lst = dbaccess.execute_query("SELECT a.artist_name, s.title, s.length, k.album_name \
+                FROM song AS s \
+                LEFT JOIN artistcreatessong AS a ON(s.song_id = a.song_id) \
+                LEFT JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
+                LEFT JOIN album as k ON (t.album_id = k.album_id) \
+                LEFT JOIN playlistcontainssong as ps ON (ps.song_id = s.song_id) \
+                LEFT JOIN playlist as p ON (p.playlist_id = ps.playlist_id)\
+                WHERE p.playlist_id = '%s' \
+                ORDER BY s.title, a.artist_name ASC"%(play_id))
     print("---")
     print("SONGS: ")
-    for song in songs:
-        song_name = dbaccess.execute_query("SELECT title FROM song where song_id ='%s'" % song)
-        print("| ", song_name[0][0])
-        print("|    -", song[0])
+    for i in lst:
+        print("Artist Name: %16s | Song Title: %18s | Length (sec): %2d | Album Name: %10s " % (i[0], i[1], i[2], i[3]))
     print("---")
 
 """
@@ -103,11 +110,13 @@ def print_options():
 
 def access_playlist(user, playlist_id): 
     #get the playlist name 
+    '''
     lst = dbaccess.execute_query("SELECT playlist_name from playlist where playlist_id = '%s'" % (playlist_id))
     pname = lst[0]
     songs = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong WHERE playlist_id = '%s'" % playlist_id)
-    print_songs(songs)
-    print('currently accessing playlist: ', pname)
+    print_songs(songs)'''
+    print_songs(playlist_id)
+    print('currently accessing playlist: ')
     print_options()
     num = input("Enter your selection here: ")
     valid = False
@@ -154,5 +163,5 @@ def access_playlist(user, playlist_id):
             num = input("(h for options) Enter your selection here: ")
 
 if __name__ == '__main__': 
-    play_playlist("celery")
+    print_songs("304262")
     
