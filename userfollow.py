@@ -53,6 +53,5 @@ def follow_screen(username):
             num = input("Incorrect value. Please try again: [1, 2] ")
 
 if __name__ == '__main__':
-    #username = useraccess.login()
-    username = "hannakoh"
+    username = useraccess.login()
     follow_screen(username)
