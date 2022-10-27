@@ -1,9 +1,9 @@
 """
-The main function for the playlist is access_playlist
+The main function for the playlist is playlist_screen
 
-Access_playlist is called by a wrapper function called play_playlist 
+Access_playlist is called by a wrapper function called see_playlist
 
-All other functions are helper functions for access_playlist
+All other functions are helper functions for playlist_screen
 """
 import dbaccess
 import playsong
@@ -163,26 +163,6 @@ def remove_song_from_playlist(p_id, user):
                     dbaccess.execute_start("DELETE FROM playlistcontainssong WHERE song_id = '%s'" % str(p[0]))
 
 
-"""
-Wrapper function for access_playlist
-Asks which playlist to open and then accesses it w/ access_playlist
-Uses name of playlist to get first playlist under that name 
-KNOWN BUGS: 
--no check to see if there are multiple playlists under that name
-"""
-def see_playlist(user):
-    inp = input("What's the name of the playlist? ")
-    # This sql statement checks if the playlist belongs to a user, and whether the playlist even exists.
-    lst = dbaccess.execute_query("SELECT p.playlist_id FROM playlist AS p \
-        LEFT JOIN usercreatesplaylist AS u ON (u.playlist_id = p.playlist_id)\
-        WHERE p.playlist_name = '%s' AND u.username = '%s'" % (inp, user))
-    #should do a check here to see if there's multiple under same name
-    # This if checks if the sql statement gets anything. 
-    if len(lst) == 1:
-        playlist_screen(user, int(str(lst[0][0])))
-    else: 
-        print("Playlist not found!")
-
 # Users can sort by song name, artist’s name, genre, and released year
 def sort_by_name(play_id): 
     lst = dbaccess.execute_query("SELECT a.artist_name, s.title, s.length, k.album_name \
@@ -268,7 +248,25 @@ def sort_playlist(playlist_id):
         print("invalid input")
     
 
-
+"""
+Wrapper function for access_playlist
+Asks which playlist to open and then accesses it w/ access_playlist
+Uses name of playlist to get first playlist under that name 
+KNOWN BUGS: 
+-no check to see if there are multiple playlists under that name
+"""
+def see_playlist(user):
+    inp = input("What's the name of the playlist? ")
+    # This sql statement checks if the playlist belongs to a user, and whether the playlist even exists.
+    lst = dbaccess.execute_query("SELECT p.playlist_id FROM playlist AS p \
+        LEFT JOIN usercreatesplaylist AS u ON (u.playlist_id = p.playlist_id)\
+        WHERE p.playlist_name = '%s' AND u.username = '%s'" % (inp, user))
+    #should do a check here to see if there's multiple under same name
+    # This if checks if the sql statement gets anything. 
+    if len(lst) == 1:
+        playlist_screen(user, int(str(lst[0][0])))
+    else: 
+        print("Playlist not found!")
             
 
 """
