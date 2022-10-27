@@ -71,12 +71,19 @@ def unfollow_user(username):
             quit = True
 
 def follow_screen(username):
+    view_user_followlist(username)
+    view_artist_followlist(username)
+    dash_len = 36
+    dash_str = "-" * dash_len
+    print(dash_str)
+
     print("What would you like to do?")
-    print("1. Follow another user")
-    print("2. Unfollow another user")
-    print("3. Follow an artist")
-    print("4. Unfollow an artist")
-    num = input("Enter your selection here: [1, 2, 3, 4] ")
+    print("  1. Follow another user")
+    print("  2. Unfollow another user")
+    print("  3. Follow an artist")
+    print("  4. Unfollow an artist")
+    print("  5. Exit")
+    num = input("Enter your selection here: [1, 2, 3, 4, 5] ")
     valid = False
     while not valid:
         if num == "1":
@@ -91,16 +98,21 @@ def follow_screen(username):
         elif num == "4":
             valid = True
             unfollow_artist(username)
+        elif num == "5":
+            break
         else:
-            num = input("Incorrect value. Please try again: [1, 2, 3, 4] ")
+            num = input("Incorrect value. Please try again: [1, 2, 3, 4, 5] ")
 
-def view_user_followlist(username):
-    #maybe make a function later to pretty print
-    dash_len = 36
+def print_list(list_name, dash_len):
     dash_str = "-" * dash_len
     print(dash_str)
-    print("%s" % ("~*~ Your User Following ~*~".center(dash_len)))
+    print("%s" % (list_name.center(dash_len)))
     print(dash_str)
+
+def view_user_followlist(username):
+    dash_len = 36
+    list_name = "~*~ Your User Following ~*~"
+    print_list(list_name, dash_len)
 
     show_followlist = "SELECT follows from userfollowsuser where username = '%s' \
                         ORDER BY follows ASC" % (username)
@@ -113,10 +125,8 @@ def view_user_followlist(username):
 
 def view_artist_followlist(username):
     dash_len = 36
-    dash_str = "-" * dash_len
-    print(dash_str)
-    print("%s" % ("~*~ Your Artist Following ~*~".center(dash_len)))
-    print(dash_str)
+    list_name = "~*~ Your Artist Following ~*~"
+    print_list(list_name, dash_len)
 
     show_followlist = "SELECT artist_name from userfollowsartist where username = '%s' \
                         ORDER BY artist_name ASC" % (username)

@@ -2,6 +2,7 @@ import dbaccess
 import useraccess
 import random as r
 import datetime
+from userfollow import print_list
 
 def create_playlist(username):
     quit = False
@@ -42,10 +43,12 @@ def convert_mins(secs):
     return duration
 
 def view_playlist(username):
-    print("%11s ~*~ Your Playlists ~*~" % (" "))
-    print("-----------------------------------------------")
-    print("%16s | %15s | %8s" % ("Playlist Name", "Number of Songs", "Duration"))
-    print("-----------------------------------------------")
+    dash_len = 50
+    list_name = "~*~ Your Playlists ~*~"
+    print_list(list_name, dash_len)
+    line = "-" * dash_len
+    print("%19s | %15s | %8s" % ("Playlist Name", "Number of Songs", "Duration"))
+    print(line)
     #check if user has any playlists or not 
     show_playlist = "SELECT playlist_id from usercreatesplaylist where username = '%s'" % (username)
     user_playlists = dbaccess.execute_query(show_playlist)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
@@ -64,8 +67,9 @@ def view_playlist(username):
         all_playlists = dbaccess.execute_query(playlist_info)
         for playlist in all_playlists: 
             duration = convert_mins(playlist[2])
-            print("%16s | %9s songs | %8s" % (playlist[0], playlist[1], duration))
-        
+            print("%19s | %9s songs | %8s" % (playlist[0], playlist[1], duration))
+    
+    print(line)
     your_playlist_screen(username)
 
 def rename_playlist(username):
@@ -145,10 +149,10 @@ def your_playlist_screen(username):
     valid = False
     while not valid:
         print("Your Playlist Options:")
-        print("1. Select a playlist")
-        print("2. Rename a playlist")
-        print("3. Delete a playlist")
-        print("4. Exit")
+        print("  1. Select a playlist")
+        print("  2. Rename a playlist")
+        print("  3. Delete a playlist")
+        print("  4. Exit")
         num = input("[1, 2, 3, 4]: ")
         if num == "1":
             valid = True
