@@ -75,6 +75,7 @@ def execute_query(str):
             return lst
     except:
         print("Connection failed")
+        return []
     finally: 
         if conn != None: 
             conn.close()

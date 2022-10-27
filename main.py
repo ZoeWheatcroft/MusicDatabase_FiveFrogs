@@ -42,7 +42,7 @@ def main():
             num = input("[1, 2, 3, 4, 5]: ")
             if num == "1":
                 valid = True
-                s.search_screen(user)
+                s.search_screen()
             elif num == "2":
                 valid = True
                 ps.play_song(user)
