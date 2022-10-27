@@ -29,7 +29,7 @@ def create_playlist(username):
 
         #keep asking if want to create another playlist until valid answer given 
         while(True):
-            ans = input("Would you like to create another playlist? (Y/N) ")
+            ans = input("Would you like to create another playlist? [Y/N] ")
             if (ans.upper() == "Y" or ans.upper() == "YES"): 
                 break
             if (ans.upper() == "N" or ans.upper() == "NO"): 
@@ -99,7 +99,7 @@ def rename_playlist(username, all_playlists):
 
             #keep asking if want to rename another playlist until valid answer given 
             while(True):
-                ans = input("Would you like to rename another playlist? (Y/N) ")
+                ans = input("Would you like to rename another playlist? [Y/N] ")
                 if (ans.upper() == "Y" or ans.upper() == "YES"): 
                     break
                 if (ans.upper() == "N" or ans.upper() == "NO"): 
@@ -134,7 +134,7 @@ def delete_playlist(username, all_playlists):
 
             #keep asking if want to delete another playlist until valid answer given 
             while(True):
-                ans = input("Would you like to delete another playlist? (Y/N) ")
+                ans = input("Would you like to delete another playlist? [Y/N] ")
                 if (ans.upper() == "Y" or ans.upper() == "YES"): 
                     break
                 if (ans.upper() == "N" or ans.upper() == "NO"): 
