@@ -4,6 +4,7 @@ import datetime
 def login(): 
     username = input("Enter your username: ")
     lst = dbaccess.execute_query("SELECT username, password from users WHERE username = '" + username +"'")
+    # MAKE SURE TO DELETE this later
     print(lst)
     if len(lst) != 0:
         password = input("Enter your password: ")
