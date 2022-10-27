@@ -9,9 +9,9 @@ def playlist_options(user):
     valid = False
     while not valid:
         print("Playlist Options:")
-        print("1. View all my playlists")
-        print("2. Create a playlist")
-        print("3. Exit")
+        print("  1. View all my playlists")
+        print("  2. Create a playlist")
+        print("  3. Exit")
         num = input("[1, 2, 3]: ")
         if num == "1":
             valid = True
@@ -34,11 +34,11 @@ def main():
         valid = False
         while not valid:
             print("What would you like to do?")
-            print("1. Search for a song")
-            print("2. Play a song")
-            print("3. View playlist options")
-            print("4. Follow/unfollow a friend")
-            print("5. Exit")
+            print("  1. Search for a song")
+            print("  2. Play a song")
+            print("  3. View playlist options")
+            print("  4. Follow/unfollow a friend")
+            print("  5. Exit")
             num = input("[1, 2, 3, 4, 5]: ")
             if num == "1":
                 valid = True
@@ -55,8 +55,8 @@ def main():
             elif num == "5":
                 return 0
             else:
-                num = input("Incorrect value. Please try again: [1, 2, 3, 4] ")
-        yn = input("Do you want to do something else? [y/n] ")
+                num = input("Incorrect value. Please try again: [1, 2, 3, 4, 5] ")
+        yn = input("Do you want to do something else? [Y/N] ")
         if yn.lower()[0] == "n":
             quit = True
 

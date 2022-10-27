@@ -90,11 +90,12 @@ def search_genre():
 
 def search_screen(): 
     print("How would you like to search for a song? ")
-    print("1. By name")
-    print("2. By artist")
-    print("3. By album")
-    print("4. By genre")
-    num = input("Enter your selection here: [1, 2, 3, 4] ")
+    print("  1. By name")
+    print("  2. By artist")
+    print("  3. By album")
+    print("  4. By genre")
+    print("  5. Exit")
+    num = input("Enter your selection here: [1, 2, 3, 4, 5] ")
     valid = False
     while not valid:
         if num == "1": 
@@ -109,8 +110,10 @@ def search_screen():
         elif num == "4": 
             valid = True
             search_genre()
+        elif num == "5": 
+            break
         else: 
-            num = input("Incorrect value. Please try again: [1, 2, 3, 4] ")
+            num = input("Incorrect value. Please try again: [1, 2, 3, 4, 5] ")
 
 
 if __name__ == '__main__': 
