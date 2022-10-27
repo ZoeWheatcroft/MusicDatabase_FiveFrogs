@@ -16,11 +16,11 @@ def print_songs(play_id):
     print("Songs in playlist: %s" %(pname))
     lst = dbaccess.execute_query("SELECT a.artist_name, s.title, s.length, k.album_name \
                 FROM song AS s \
-                LEFT JOIN artistcreatessong AS a ON(s.song_id = a.song_id) \
-                LEFT JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
-                LEFT JOIN album as k ON (t.album_id = k.album_id) \
-                LEFT JOIN playlistcontainssong as ps ON (ps.song_id = s.song_id) \
-                LEFT JOIN playlist as p ON (p.playlist_id = ps.playlist_id)\
+                INNER JOIN artistcreatessong AS a ON(s.song_id = a.song_id) \
+                INNER JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
+                INNER JOIN album as k ON (t.album_id = k.album_id) \
+                INNER JOIN playlistcontainssong as ps ON (ps.song_id = s.song_id) \
+                INNER JOIN playlist as p ON (p.playlist_id = ps.playlist_id)\
                 WHERE p.playlist_id = '%s' \
                 ORDER BY s.title, a.artist_name ASC"%(play_id))
     print("---")
@@ -54,6 +54,7 @@ def remove_album_from_playlist(playlist_id):
             c = input("[Y] / [N]")
             if c.upper()[0] == 'N':
                 quit = True
+
 
 """
 asks the user which song on the playlist they'd like to play
@@ -144,6 +145,7 @@ def sort_by_name(play_id):
                 LEFT JOIN playlistcontainssong as ps ON (ps.song_id = s.song_id) \
                 LEFT JOIN playlist as p ON (p.playlist_id = ps.playlist_id)\
                 WHERE p.playlist_id = '%s' \
+                GROUP BY a.artist_name, s.title, s.length, k.album_name \
                 ORDER BY s.title ASC"%(play_id))
     print("---")
     print("SONGS: ")
@@ -160,6 +162,7 @@ def sort_by_artist(play_id):
                 LEFT JOIN playlistcontainssong as ps ON (ps.song_id = s.song_id) \
                 LEFT JOIN playlist as p ON (p.playlist_id = ps.playlist_id)\
                 WHERE p.playlist_id = '%s' \
+                GROUP BY g.genre_name, a.artist_name, s.title, s.length, k.album_name\
                 ORDER BY a.artist_name ASC"%(play_id))
     print("---")
     print("SONGS: ")
@@ -168,20 +171,21 @@ def sort_by_artist(play_id):
     print("---")
 
 def sort_by_genre(play_id): 
-    lst = dbaccess.execute_query("SELECT g.genre_name, a.artist_name, s.title, s.length, k.album_name \
+    lst = dbaccess.execute_query("SELECT s.song_id, g.genre_name, a.artist_name, s.title, s.length, k.album_name \
                 FROM song AS s \
-                LEFT JOIN artistcreatessong AS a ON(s.song_id = a.song_id) \
+                LEFT JOIN artistcreatessong AS a ON(s.song_id = a.song_id)  \
+                LEFT JOIN playlistcontainssong as ps ON (ps.song_id = s.song_id) \
+                LEFT JOIN playlist as p ON (p.playlist_id = ps.playlist_id AND p.playlist_id = ps.playlist_id)\
+                LEFT JOIN songhasgenre as g ON (g.song_id = s.song_id AND g.song_id = ps.song_id ) \
                 LEFT JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
                 LEFT JOIN album as k ON (t.album_id = k.album_id) \
-                LEFT JOIN songhasgenre as g ON (g.song_id = s.song_id) \
-                LEFT JOIN playlistcontainssong as ps ON (ps.song_id = s.song_id) \
-                LEFT JOIN playlist as p ON (p.playlist_id = ps.playlist_id)\
                 WHERE p.playlist_id = '%s' \
+                GROUP BY s.song_id, g.genre_name, a.artist_name, s.title, s.length, k.album_name\
                 ORDER BY g.genre_name ASC"%(play_id))
     print("---")
     print("SONGS: ")
     for i in lst:
-        print("Genre Name: %6s | Artist Name: %16s | Song Title: %18s | Length (sec): %2d | Album Name: %10s " % (i[0], i[1], i[2], i[3], i[4]))
+        print("%s Genre Name: %6s | Artist Name: %16s | Song Title: %18s | Length (sec): %2d | Album Name: %10s " % (i[0], i[1], i[2], i[3], i[4], i[5]))
     print("---")
 
 def sort_by_month(play_id): 
@@ -193,6 +197,7 @@ def sort_by_month(play_id):
                 LEFT JOIN playlistcontainssong as ps ON (ps.song_id = s.song_id) \
                 LEFT JOIN playlist as p ON (p.playlist_id = ps.playlist_id)\
                 WHERE p.playlist_id = '%s' \
+                GROUP BY a.artist_name, s.title, s.length, k.album_name, s.song_release_date \
                 ORDER BY month ASC"%(play_id))
     print("---")
     print("SONGS: ")
@@ -229,8 +234,9 @@ def print_options():
     print("2 - Sort playlist")
     print("3 - Add song")
     print("4 - Delete song")
-    print("5 - Exit")
-
+    print("5 - Add album")
+    print("6 - Delete album")
+    print("7 - Exit")
 """
 main function 
 """
@@ -263,6 +269,11 @@ def playlist_screen(user, playlist_id):
             remove_song_from_playlist(playlist_id, user)   
         #exit
         elif num == "5":
+            valid = True
+            add_album_to_playlist(playlist_id)
+        elif num == "6":
+            remove_album_from_playlist(playlist_id)
+        elif num == "7":
             return 0
         elif num == "h" or num == "H":
             print_options()
@@ -273,6 +284,9 @@ def playlist_screen(user, playlist_id):
         if(num != "5"):
             num = input("(h for options) Enter your selection here: ")
 
-if __name__ == '__main__': 
-    see_playlist("lh5844")
+if __name__ == '__main__':
+    sort_by_name(30346) 
+    sort_by_artist(30346)
+    sort_by_genre(30346)
+    sort_by_month(30346)
     
