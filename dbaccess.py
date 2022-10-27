@@ -18,7 +18,7 @@ def execute_start(str):
                                 ssh_password=password,
                                 remote_bind_address=('localhost', 5432)) as server:
             server.start()
-            print("SSH tunnel established")
+            #print("SSH tunnel established")
             params = {
                 'database': dbName,
                 'user': username,
@@ -30,7 +30,7 @@ def execute_start(str):
             conn = psycopg2.connect(**params)
             curs = conn.cursor()
             curs.execute(str)
-            print("Database connection established")
+            #print("Database connection established")
             conn.commit()
     except:
         print("Connection failed")
@@ -55,7 +55,7 @@ def execute_query(str):
                                 ssh_password=password,
                                 remote_bind_address=('localhost', 5432)) as server:
             server.start()
-            print("SSH tunnel established")
+            #print("SSH tunnel established")
             params = {
                 'database': dbName,
                 'user': username,
@@ -70,7 +70,7 @@ def execute_query(str):
             lst = []
             for s in curs: 
                 lst.append(s)
-            print("Database connection established")
+            #print("Database connection established")
             conn.close()
             return lst
     except:
