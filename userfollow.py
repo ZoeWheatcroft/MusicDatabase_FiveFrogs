@@ -76,7 +76,7 @@ def follow_screen(username):
     print("2. Unfollow another user")
     print("3. Follow an artist")
     print("4. Unfollow an artist")
-    num = input("Enter your selection here: [1, 2] ")
+    num = input("Enter your selection here: [1, 2, 3, 4] ")
     valid = False
     while not valid:
         if num == "1":
@@ -92,8 +92,42 @@ def follow_screen(username):
             valid = True
             unfollow_artist(username)
         else:
-            num = input("Incorrect value. Please try again: [1, 2] ")
+            num = input("Incorrect value. Please try again: [1, 2, 3, 4] ")
+
+def view_user_followlist(username):
+    #maybe make a function later to pretty print
+    dash_len = 36
+    dash_str = "-" * dash_len
+    print(dash_str)
+    print("%s" % ("~*~ Your User Following ~*~".center(dash_len)))
+    print(dash_str)
+
+    show_followlist = "SELECT follows from userfollowsuser where username = '%s' \
+                        ORDER BY follows ASC" % (username)
+    user_followlist = dbaccess.execute_query(show_followlist)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+    if not user_followlist: 
+        print("You are not following any users")
+    else: 
+        for user in user_followlist:
+            print("%s" % (user[0].center(dash_len)))
+
+def view_artist_followlist(username):
+    dash_len = 36
+    dash_str = "-" * dash_len
+    print(dash_str)
+    print("%s" % ("~*~ Your Artist Following ~*~".center(dash_len)))
+    print(dash_str)
+
+    show_followlist = "SELECT artist_name from userfollowsartist where username = '%s' \
+                        ORDER BY artist_name ASC" % (username)
+    user_followlist = dbaccess.execute_query(show_followlist)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+    if not user_followlist: 
+        print("You are not following any artists")
+    else: 
+        for user in user_followlist:
+            print("%s" % (user[0].center(dash_len)))
 
 if __name__ == '__main__':
-    username = useraccess.login()
-    follow_screen(username)
+    #username = useraccess.login()
+    #follow_screen(username)
+    view_artist_followlist("lh5844")
