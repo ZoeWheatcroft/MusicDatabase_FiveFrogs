@@ -42,12 +42,15 @@ def convert_mins(secs):
     return duration
 
 def view_playlist(username):
+    print("%11s ~*~ Your Playlists ~*~" % (" "))
+    print("-----------------------------------------------")
+    print("%16s | %15s | %8s" % ("Playlist Name", "Number of Songs", "Duration"))
+    print("-----------------------------------------------")
     #check if user has any playlists or not 
     show_playlist = "SELECT playlist_id from usercreatesplaylist where username = '%s'" % (username)
     user_playlists = dbaccess.execute_query(show_playlist)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
     if not user_playlists: 
         print("No playlists created")
-        return None
     else: 
         playlist_info = "SELECT p.playlist_name, COUNT(c.song_id), SUM(s.length)\
                             FROM playlist AS p \
@@ -59,20 +62,16 @@ def view_playlist(username):
                             ORDER BY p.playlist_name ASC"
 
         all_playlists = dbaccess.execute_query(playlist_info)
-        print("%11s ~*~ Your Playlists ~*~" % (" "))
-        print("-----------------------------------------------")
-        print("%16s | %15s | %8s" % ("Playlist Name", "Number of Songs", "Duration"))
-        print("-----------------------------------------------")
         for playlist in all_playlists: 
             duration = convert_mins(playlist[2])
             print("%16s | %9s songs | %8s" % (playlist[0], playlist[1], duration))
         
-        your_playlist_screen(username, all_playlists)
+    your_playlist_screen(username)
 
-        return all_playlists
-
-def rename_playlist(username, all_playlists):
-    if all_playlists == None: 
+def rename_playlist(username):
+    show_playlist = "SELECT playlist_id from usercreatesplaylist where username = '%s'" % (username)
+    user_playlists = dbaccess.execute_query(show_playlist)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+    if not user_playlists: 
         print("Error: No playlists available to rename")
     else: 
         quit = False
@@ -105,8 +104,10 @@ def rename_playlist(username, all_playlists):
                     quit = True
                     break
     
-def delete_playlist(username, all_playlists):
-    if all_playlists == None: 
+def delete_playlist(username):
+    show_playlist = "SELECT playlist_id from usercreatesplaylist where username = '%s'" % (username)
+    user_playlists = dbaccess.execute_query(show_playlist)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+    if not user_playlists: 
         print("Error: No playlists available to delete")
     else: 
         quit = False
@@ -140,7 +141,7 @@ def delete_playlist(username, all_playlists):
                     quit = True
                     break
 
-def your_playlist_screen(username, all_playlists):
+def your_playlist_screen(username):
     valid = False
     while not valid:
         print("Your Playlist Options:")
@@ -155,10 +156,10 @@ def your_playlist_screen(username, all_playlists):
             print("work in progress but should lead to list of songs under a playlist")
         elif num == "2":
             valid = True
-            rename_playlist(username, all_playlists)
+            rename_playlist(username)
         elif num == "3":
             valid = True
-            delete_playlist(username, all_playlists)
+            delete_playlist(username)
         elif num == "4":
             break
         else:
@@ -169,7 +170,7 @@ if __name__ == '__main__':
     #create_playlist("lh5844")
     #create_playlist("hi")
     #view_playlist(username)
-    all_playlists = view_playlist("lh5844")
+    all_playlists = view_playlist("hannakoh")
     
     #rename_playlist("lh5844", all_playlists)
     #delete_playlist("lh5844", all_playlists)
