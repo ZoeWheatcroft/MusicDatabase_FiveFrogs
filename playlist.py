@@ -188,7 +188,7 @@ def sort_by_name(play_id):
     lst = dbaccess.execute_query("SELECT a.artist_name, s.title, s.length, k.album_name \
                 FROM song AS s \
                 LEFT JOIN artistcreatessong AS a ON(s.song_id = a.song_id) \
-                LEFT JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
+                INNER JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
                 LEFT JOIN album as k ON (t.album_id = k.album_id) \
                 LEFT JOIN playlistcontainssong as ps ON (ps.song_id = s.song_id) \
                 LEFT JOIN playlist as p ON (p.playlist_id = ps.playlist_id)\
@@ -205,12 +205,12 @@ def sort_by_artist(play_id):
     lst = dbaccess.execute_query("SELECT a.artist_name, s.title, s.length, k.album_name \
                 FROM song AS s \
                 LEFT JOIN artistcreatessong AS a ON(s.song_id = a.song_id) \
-                LEFT JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
+                INNER JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
                 LEFT JOIN album as k ON (t.album_id = k.album_id) \
                 LEFT JOIN playlistcontainssong as ps ON (ps.song_id = s.song_id) \
                 LEFT JOIN playlist as p ON (p.playlist_id = ps.playlist_id)\
                 WHERE p.playlist_id = '%s' \
-                GROUP BY g.genre_name, a.artist_name, s.title, s.length, k.album_name\
+                GROUP BY a.artist_name, s.title, s.length, k.album_name\
                 ORDER BY a.artist_name ASC"%(play_id))
     print("---")
     print("SONGS: ")
@@ -221,11 +221,11 @@ def sort_by_artist(play_id):
 def sort_by_genre(play_id): 
     lst = dbaccess.execute_query("SELECT s.song_id, g.genre_name, a.artist_name, s.title, s.length, k.album_name \
                 FROM song AS s \
-                LEFT JOIN artistcreatessong AS a ON(s.song_id = a.song_id)  \
-                LEFT JOIN playlistcontainssong as ps ON (ps.song_id = s.song_id) \
+                INNER JOIN artistcreatessong AS a ON(s.song_id = a.song_id)  \
+                INNER JOIN playlistcontainssong as ps ON (ps.song_id = s.song_id) \
                 LEFT JOIN playlist as p ON (p.playlist_id = ps.playlist_id AND p.playlist_id = ps.playlist_id)\
                 LEFT JOIN songhasgenre as g ON (g.song_id = s.song_id AND g.song_id = ps.song_id ) \
-                LEFT JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
+                INNER JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
                 LEFT JOIN album as k ON (t.album_id = k.album_id) \
                 WHERE p.playlist_id = '%s' \
                 GROUP BY s.song_id, g.genre_name, a.artist_name, s.title, s.length, k.album_name\
@@ -240,9 +240,9 @@ def sort_by_month(play_id):
     lst = dbaccess.execute_query("SELECT a.artist_name, s.title, s.length, k.album_name, EXTRACT(MONTH from s.song_release_date) AS month \
                 FROM song AS s \
                 LEFT JOIN artistcreatessong AS a ON(s.song_id = a.song_id) \
-                LEFT JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
+                INNER JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
                 LEFT JOIN album as k ON (t.album_id = k.album_id) \
-                LEFT JOIN playlistcontainssong as ps ON (ps.song_id = s.song_id) \
+                INNER JOIN playlistcontainssong as ps ON (ps.song_id = s.song_id) \
                 LEFT JOIN playlist as p ON (p.playlist_id = ps.playlist_id)\
                 WHERE p.playlist_id = '%s' \
                 GROUP BY a.artist_name, s.title, s.length, k.album_name, s.song_release_date \
@@ -255,15 +255,15 @@ def sort_by_month(play_id):
 
 
 def sort_playlist(playlist_id): 
-    inp = input("Sort songs by [1] Song name, [2] Artist name, [3] Genre, [4] Released year ")
+    inp = input("Sort songs by [1] Song name, [2] Artist name, [3] Genre, [4] Released month ")
     if(inp == "1"):
         sort_by_name(playlist_id)
     elif(inp == "2"): 
         sort_by_artist(playlist_id)
     elif(inp == "3"): 
-        sort_by_artist(playlist_id)
+        sort_by_genre(playlist_id)
     elif(inp == "4"): 
-        sort_by_artist(playlist_id)
+        sort_by_month(playlist_id)
     else: 
         print("invalid input")
     
@@ -333,5 +333,5 @@ def playlist_screen(user, playlist_id):
             num = input("(h for options) Enter your selection here: ")
 
 if __name__ == '__main__': 
-    remove_album_from_playlist(300)
+    sort_playlist(30003)
     
