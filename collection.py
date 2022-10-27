@@ -1,6 +1,7 @@
 import dbaccess
 import useraccess
 import random as r
+import datetime
 
 def create_playlist(username):
     quit = False
@@ -33,6 +34,12 @@ def create_playlist(username):
                 quit = True
                 break
 
+def convert_mins(secs):
+    if secs == None: 
+        return "0:00:00"
+    duration = str(datetime.timedelta(seconds=secs))
+    return duration
+
 def view_playlist(username):
     #check if user has any playlists or not 
     show_playlist = "SELECT playlist_id from usercreatesplaylist where username = " + "'" + username + "'"
@@ -50,12 +57,17 @@ def view_playlist(username):
                             ORDER BY p.playlist_name ASC"
 
         all_playlists = dbaccess.execute_query(playlist_info)
+        print("%11s ~*~ Your Playlists ~*~" % (" "))
+        print("-----------------------------------------------")
+        print("%16s | %15s | %8s" % ("Playlist Name", "Number of Songs", "Duration"))
+        print("-----------------------------------------------")
         for playlist in all_playlists: 
-            print(playlist)
+            duration = convert_mins(playlist[2])
+            print("%16s | %9s songs | %8s" % (playlist[0], playlist[1], duration))
 
 if __name__ == '__main__': 
-    username = useraccess.login()
+    #username = useraccess.login()
     #create_playlist(username)
     #create_playlist("hi")
-    view_playlist(username)
-    #view_playlist("lh5844")
+    #view_playlist(username)
+    view_playlist("lh5844")
