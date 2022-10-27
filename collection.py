@@ -42,6 +42,7 @@ def convert_mins(secs):
     return duration
 
 def view_playlist(username):
+    print("-----------------------------------------------")
     print("%11s ~*~ Your Playlists ~*~" % (" "))
     print("-----------------------------------------------")
     print("%16s | %15s | %8s" % ("Playlist Name", "Number of Songs", "Duration"))
@@ -65,7 +66,8 @@ def view_playlist(username):
         for playlist in all_playlists: 
             duration = convert_mins(playlist[2])
             print("%16s | %9s songs | %8s" % (playlist[0], playlist[1], duration))
-        
+    
+    print("-----------------------------------------------")
     your_playlist_screen(username)
 
 def rename_playlist(username):
@@ -145,10 +147,10 @@ def your_playlist_screen(username):
     valid = False
     while not valid:
         print("Your Playlist Options:")
-        print("1. Select a playlist")
-        print("2. Rename a playlist")
-        print("3. Delete a playlist")
-        print("4. Exit")
+        print("  1. Select a playlist")
+        print("  2. Rename a playlist")
+        print("  3. Delete a playlist")
+        print("  4. Exit")
         num = input("[1, 2, 3, 4]: ")
         if num == "1":
             valid = True
