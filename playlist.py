@@ -331,5 +331,6 @@ def playlist_screen(user, playlist_id):
             num = input("(h for options) Enter your selection here: ")
 
 if __name__ == '__main__': 
-    sort_playlist(30003)
+    user = useraccess.login()
+    see_playlist(user)
     
