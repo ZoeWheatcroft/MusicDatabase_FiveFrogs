@@ -18,23 +18,31 @@ def play_song(user):
     lst = dbaccess.execute_query("SELECT s.song_id, s.title, a.artist_name from SONG AS s \
         LEFT JOIN artistcreatessong AS a ON (s.song_id = a.song_id) where s.title = '%s'" % (name))
     while (len(lst) == 0): 
-        name = input("Song name not found! Try again, or enter search to search for songs: ")
+        name = input("Song name not found! Try again, or enter search to search for songs, or quit to quit: ")
         if name.lower() == "search": 
             songsearch.search_screen(user)
             name = input("Which song would you like to play? ")
+        if name.lower() == "quit": 
+            return 0
         lst = dbaccess.execute_query("SELECT s.song_id, s.title, a.artist_name from SONG AS s \
         LEFT JOIN artistcreatessong AS a ON (s.song_id = a.song_id) where s.title = '%s'" % (name))
 
-    while(len(lst) > 1): 
+    if (len(lst) > 1): 
         print("Multiple songs found!")
         for i in lst: 
             print("Artist Name: %16s | Song Title: %18s" % (i[2], i[1]))
         artist = input("Who is this song by? ")
         lst = dbaccess.execute_query("SELECT s.song_id, s.title, a.artist_name from SONG AS s \
         LEFT JOIN artistcreatessong AS a ON (s.song_id = a.song_id) where s.title = '%s' AND a.artist_name = '%s'" % (name, artist))
-    if len(lst) == 0: 
-        print("Song not found!")
-        return 0
+    while(len(lst) == 0): 
+        artist = input("Song name not found! Try again, or enter search to search for songs, or quit to quit: ")
+        if artist.lower() == "search": 
+            songsearch.search_screen(user)
+            artist = input("Who is this song by? ")
+        if artist.lower() == "quit": 
+            return 0
+        lst = dbaccess.execute_query("SELECT s.song_id, s.title, a.artist_name from SONG AS s \
+        LEFT JOIN artistcreatessong AS a ON (s.song_id = a.song_id) where s.title = '%s' AND a.artist_name = '%s'" % (name, artist))
     play_songID(lst[0][0], user)
 
 
