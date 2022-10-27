@@ -15,16 +15,37 @@ def play_songID(s_id, user):
 def play_song(user): 
     lst = []
     name = input("Which song would you like to play? ")
-    lst = dbaccess.execute_query("SELECT song_id from SONG where title = '%s'" % (name))
+    lst = dbaccess.execute_query("SELECT s.song_id, s.title, a.artist_name from SONG AS s \
+        LEFT JOIN artistcreatessong AS a ON (s.song_id = a.song_id) where s.title = '%s'" % (name))
     while (len(lst) == 0): 
         name = input("Song name not found! Try again, or enter search to search for songs: ")
         if name.lower() == "search": 
             songsearch.search_screen(user)
             name = input("Which song would you like to play? ")
-        
-        lst = dbaccess.execute_query("SELECT song_id from SONG where title = '%s'" % (name))
+        lst = dbaccess.execute_query("SELECT s.song_id, s.title, a.artist_name from SONG AS s \
+        LEFT JOIN artistcreatessong AS a ON (s.song_id = a.song_id) where s.title = '%s'" % (name))
+
+    while(len(lst) > 1): 
+        print("Multiple songs found!")
+        for i in lst: 
+            print("Artist Name: %16s | Song Title: %18s" % (i[2], i[1]))
+        artist = input("Who is this song by? ")
+        lst = dbaccess.execute_query("SELECT s.song_id, s.title, a.artist_name from SONG AS s \
+        LEFT JOIN artistcreatessong AS a ON (s.song_id = a.song_id) where s.title = '%s' AND a.artist_name = '%s'" % (name, artist))
+    if len(lst) == 0: 
+        print("Song not found!")
+        return 0
     play_songID(lst[0][0], user)
+
+
+def play_playlistbyid(user, play_id): 
+    # select all songs in the playlist
+    lst = dbaccess.execute_query("SELECT song_id\
+                FROM playlistcontainssong \
+                WHERE playlist_id = '%s'" % ( play_id))
+    for i in lst: 
+        play_songID(i[0], user)
 
 if __name__ == '__main__': 
     username = useraccess.login()
-    play_song(username)
+    play_playlistbyid(username, "304262")

@@ -50,7 +50,7 @@ def view_playlist(username):
         print("No playlists created")
         return None
     else: 
-        playlist_info = "SELECT p.playlist_name, COUNT(c.song_id), SUM(s.length), p.playlist_id\
+        playlist_info = "SELECT p.playlist_name, COUNT(c.song_id), SUM(s.length)\
                             FROM playlist AS p \
                             LEFT JOIN playlistcontainssong AS c ON (p.playlist_id = c.playlist_id)\
                             LEFT JOIN song AS s ON (s.song_id = c.song_id)\
@@ -67,7 +67,6 @@ def view_playlist(username):
         for playlist in all_playlists: 
             duration = convert_mins(playlist[2])
             print("%16s | %9s songs | %8s" % (playlist[0], playlist[1], duration))
-            print(playlist[3])
         return all_playlists
 
 def rename_playlist(username, all_playlists):
@@ -78,16 +77,18 @@ def rename_playlist(username, all_playlists):
         while(not quit):
             rename = input("Which playlist do you want to rename? ")
             #check if that playlist name exists 
-            if rename not in all_playlists[0]:
+            select_check_exists = "SELECT playlist_name from playlist WHERE playlist_name = '%s'" % (rename)
+            check_exists = dbaccess.execute_query(select_check_exists)
+            if not check_exists:
                 print("Error: '%s' does not exist" % (rename))
             else: 
                 name = input("What do you want to name it to? ")
+                #update playlist_name only if playlist_id is the right one
                 select_rename_id = "SELECT p.playlist_id \
                             FROM playlist AS p \
                             LEFT JOIN usercreatesplaylist AS u on (p.playlist_id = u.playlist_id) \
                             WHERE u.username = '%s' AND p.playlist_name = '%s'" % (username, rename)
                 rename_id = dbaccess.execute_query(select_rename_id)
-                print(rename_id[0][0])
                 dbaccess.execute_start("UPDATE playlist SET playlist_name = '%s' \
                                         WHERE playlist_id = '%s'" % (name, rename_id[0][0]))
 
@@ -101,11 +102,48 @@ def rename_playlist(username, all_playlists):
                 if (ans.upper() == "N" or ans.upper() == "NO"): 
                     quit = True
                     break
+    
+def delete_playlist(username, all_playlists):
+    if all_playlists == None: 
+        print("Error: No playlists available to delete")
+    else: 
+        quit = False
+        while(not quit):
+            delete_name = input("Which playlist do you want to delete? ")
+            #check if that playlist name exists 
+            select_check_exists = "SELECT playlist_name from playlist WHERE playlist_name = '%s'" % (delete_name)
+            check_exists = dbaccess.execute_query(select_check_exists)
+            if not check_exists:
+                print("Error: '%s' does not exist" % (delete_name))
+            else: 
+                #delete playlist only if playlist_id is the right one
+                select_rename_id = "SELECT p.playlist_id \
+                            FROM playlist AS p \
+                            LEFT JOIN usercreatesplaylist AS u on (p.playlist_id = u.playlist_id) \
+                            WHERE u.username = '%s' AND p.playlist_name = '%s'" % (username, delete_name)
+                rename_id = dbaccess.execute_query(select_rename_id)
+
+                dbaccess.execute_start("DELETE FROM usercreatesplaylist WHERE playlist_id = '%s'" % (rename_id[0][0]))
+                dbaccess.execute_start("DELETE FROM playlistcontainssong WHERE playlist_id = '%s'" % (rename_id[0][0]))
+                dbaccess.execute_start("DELETE FROM playlist WHERE playlist_id = '%s'" % (rename_id[0][0]))
+
+                print("'%s' has been deleted" % (delete_name))
+
+            #keep asking if want to delete another playlist until valid answer given 
+            while(True):
+                ans = input("Would you like to delete another playlist? (Y/N) ")
+                if (ans.upper() == "Y" or ans.upper() == "YES"): 
+                    break
+                if (ans.upper() == "N" or ans.upper() == "NO"): 
+                    quit = True
+                    break
 
 if __name__ == '__main__': 
     #username = useraccess.login()
-    #create_playlist(username)
+    #create_playlist("lh5844")
     #create_playlist("hi")
     #view_playlist(username)
     all_playlists = view_playlist("lh5844")
-    rename_playlist("lh5844", all_playlists)
+    
+    #rename_playlist("lh5844", all_playlists)
+    delete_playlist("lh5844", all_playlists)
