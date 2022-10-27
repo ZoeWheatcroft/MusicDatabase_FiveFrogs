@@ -7,13 +7,13 @@ def follow_user(username):
     while(not quit):
         word = input("What is the username of the user that you would like to follow? ")
         # TODO: SQL NEEDS TO CHECK IF THE USER IS ALREADY BEING FOLLOWED
-        lst = dbaccess.execute_query("SELECT username from users WHERE username = '%s'"%(word))
+        lst = dbaccess.execute_query("SELECT username from users WHERE username = '%s'" % (word))
         if len(lst) != 0: 
-            lst = dbaccess.execute_query("SELECT username from userfollowsuser WHERE username = '%s' AND follows = '%s'" %(username, word))
+            lst = dbaccess.execute_query("SELECT username from userfollowsuser WHERE username = '%s' AND follows = '%s'" % (username, word))
             if len(lst) == 0:
                 dbaccess.execute_start("INSERT INTO userfollowsuser (username, follows) \
-                        VALUES ('"+ username +"', '"+ str(word) +"')")
-                print("User %s has been followed." %(word))
+                        VALUES ('%s', '%s')" % (username, word))
+                print("User %s has been followed." % (word))
             else: 
                 print("User %s is already followed!" % (word))
         else: 
@@ -27,13 +27,13 @@ def follow_artist(username):
     quit = False
     while(not quit):
         word = input("What is the name of the artist that you would like to follow? ")
-        lst = dbaccess.execute_query("SELECT artist_name from artist WHERE artist_name = '%s'"%(word))
+        lst = dbaccess.execute_query("SELECT artist_name from artist WHERE artist_name = '%s'" % (word))
         if len(lst) != 0: 
-            lst = dbaccess.execute_query("SELECT artist_name from userfollowsartist WHERE username = '%s' AND artist_name = '%s'" %(username, word))
+            lst = dbaccess.execute_query("SELECT artist_name from userfollowsartist WHERE username = '%s' AND artist_name = '%s'" % (username, word))
             if len(lst) == 0:
                 dbaccess.execute_start("INSERT INTO userfollowsartist (username, artist_name) \
-                        VALUES ('"+ username +"', '"+ str(word) +"')")
-                print("Artist %s has been followed." %(word))
+                        VALUES ('%s', '%s')" % (username, word))
+                print("Artist %s has been followed." % (word))
             else: 
                 print("Artist %s is already followed!" % (word))
         else: 
@@ -49,7 +49,7 @@ def unfollow_artist(username):
         lst = dbaccess.execute_query("SELECT artist_name FROM userfollowsartist WHERE username = '%s' AND artist_name = '%s'" %(username, word))
         if len(lst) != 0:
             dbaccess.execute_start("DELETE FROM userfollowsartist \
-                WHERE username = '"+ username +"' AND artist_name = '"+ str(word) +"'")
+                WHERE username = '%s' AND artist_name = '%s'" % (username, word) )
         else: 
             print("You do not follow this artist.")
         c = input("Would you like to unfollow another artist? ")
@@ -60,10 +60,10 @@ def unfollow_user(username):
     quit = False
     while(not quit):
         word = input("What is the username of the user that you would like to unfollow? ")
-        lst = dbaccess.execute_query("SELECT username FROM userfollowsuser WHERE username = '%s' AND follows = '%s'" %(username, word))
+        lst = dbaccess.execute_query("SELECT username FROM userfollowsuser WHERE username = '%s' AND follows = '%s'" % (username, word))
         if len(lst) != 0:
             dbaccess.execute_start("DELETE FROM userfollowsuser \
-                WHERE username = '"+ username +"' AND follows = '"+ str(word) +"'")
+                WHERE username = '%s' AND follows = '%s'" % (username, word))
         else: 
             print("You do not follow this user.")
         c = input("Would you like to unfollow another user? ")
