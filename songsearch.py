@@ -2,7 +2,7 @@ import dbaccess
 import useraccess
 
 # search by name
-def search_name(username): 
+def search_name(): 
     quit = False
     lst = None
     while(not quit):
@@ -23,7 +23,7 @@ def search_name(username):
             quit = True
     return lst
 
-def search_artist(username):
+def search_artist():
     quit = False
     lst = None
     while(not quit): 
@@ -45,7 +45,7 @@ def search_artist(username):
     return lst
 
 
-def search_album(username): 
+def search_album(): 
     quit = False
     lst = None
     while(not quit): 
@@ -66,7 +66,7 @@ def search_album(username):
             quit = True
     return lst
 
-def search_genre(username): 
+def search_genre(): 
     quit = False
     lst = None
     while(not quit): 
@@ -88,7 +88,7 @@ def search_genre(username):
             quit = True
     return lst
 
-def search_screen(username): 
+def search_screen(): 
     print("How would you like to search for a song? ")
     print("1. By name")
     print("2. By artist")
@@ -99,16 +99,16 @@ def search_screen(username):
     while not valid:
         if num == "1": 
             valid = True
-            search_name(username)
+            search_name()
         elif num == "2": 
             valid = True
-            search_artist(username)
+            search_artist()
         elif num == "3": 
             valid = True
-            search_album(username)
+            search_album()
         elif num == "4": 
             valid = True
-            search_genre(username)
+            search_genre()
         else: 
             num = input("Incorrect value. Please try again: [1, 2, 3, 4] ")
 
