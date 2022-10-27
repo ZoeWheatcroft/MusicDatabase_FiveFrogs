@@ -40,20 +40,63 @@ def remove_album_from_playlist(playlist_id):
         word = input("What is the name of the album that you would like to remove? ")
         # First, find the album with the given name
         album = dbaccess.execute_query("SELECT album_id FROM album WHERE album_name = '%s'"%(word))
+        # If there are multiple albums with the given name, ask for the artist of the album
+        if len(album) > 1:
+            artist = input("Multiple albums found with that name, please specify artist: ")
+            album = dbaccess.execute_query("SELECT album_id FROM artistcreatesalbum WHERE artist_name = '%s'"%(artist))
         if len(album) == 1:
             songs = dbaccess.execute_query("SELECT song_id FROM albumcontainssong WHERE album_id = '%s'"%(album))
             # Now remove the songs from the playlist
             if len(songs) != 0:
                 quit = True
-                for s in songs:
-                    dbaccess.execute_start("DELETE FROM playlistcontainssong WHERE song_id = '"+ s +"' AND playlist_id = '"+ playlist_id +"'")
+                for song_id in songs:
+                    # Delete any songs from this album that are in the playlist
+                    dbaccess.execute_start("DELETE FROM playlistcontainssong \
+                                            WHERE song_id = '%s' \
+                                            AND playlist_id = '%s'" 
+                                            % (song_id, playlist_id))
             else:
-                print("There are no songs in the playlist from this album, please try again")
+                print("There are no songs in this album, please try again.")
         elif len(album) == 0:
             print("There is no album with this name, would you like to try again?")
             c = input("[Y] / [N]")
             if c.upper()[0] == 'N':
                 quit = True
+
+"""
+Adds an entire album to a playlist
+"""
+def add_album_to_playlist(playlist_id):
+    quit = False
+    while(not quit):
+        word = input("What is the name of the album that you would like to add? ")
+        # First, find the album with the given name
+        album = dbaccess.execute_query("SELECT album_id FROM album WHERE album_name = '%s'"%(word))
+        # If there are multiple albums with the given name, ask for the artist of the album
+        if len(album) > 1:
+            artist = input("Multiple albums found with that name, please specify artist: ")
+            album = dbaccess.execute_query("SELECT album_id FROM artistcreatesalbum WHERE artist_name = '%s'"%(artist))
+        if len(album) == 1:
+            songs = dbaccess.execute_query("SELECT song_id FROM albumcontainssong WHERE album_id = '%s'"%(album))
+            # Now add the songs to the playlist
+            if len(songs) != 0:
+                quit = True
+                for song_id in songs:
+                    # Insert only songs that do not already exist in the playlist
+                    dbaccess.execute_start("INSERT INTO playlistcontainssong (playlist_id, song_id) \
+                                            VALUES ('%s', '%s') \
+                                            WHERE NOT EXISTS \
+                                                (SELECT * FROM playlistcontainssong \
+                                                WHERE playlist_id = '%s' AND song_id = '%s')"
+                                            % (playlist_id, song_id, playlist_id, song_id))
+            else:
+                print("There are no songs in this album, please try again.")
+        elif len(album) == 0:
+            print("There is no album with this name, would you like to try again?")
+            c = input("[Y] / [N]")
+            if c.upper()[0] == 'N':
+                quit = True
+
 
 """
 asks the user which song on the playlist they'd like to play
