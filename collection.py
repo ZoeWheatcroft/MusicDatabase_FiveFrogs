@@ -1,5 +1,5 @@
 import dbaccess
-import useraccess
+import useraccess as u
 import random as r
 import datetime
 from userfollow import print_list
@@ -28,13 +28,8 @@ def create_playlist(username):
         print("Playlist called '" + name + "' has been made")
 
         #keep asking if want to create another playlist until valid answer given 
-        while(True):
-            ans = input("Would you like to create another playlist? [Y/N] ")
-            if (ans.upper() == "Y" or ans.upper() == "YES"): 
-                break
-            if (ans.upper() == "N" or ans.upper() == "NO"): 
-                quit = True
-                break
+        if(u.keep_asking("Would you like to create another playlist?")):
+            quit = True
 
 def convert_mins(secs):
     if secs == None: 
@@ -100,13 +95,8 @@ def rename_playlist(username):
                 print("'%s' renamed to '%s'" % (rename, name))
 
             #keep asking if want to rename another playlist until valid answer given 
-            while(True):
-                ans = input("Would you like to rename another playlist? [Y/N] ")
-                if (ans.upper() == "Y" or ans.upper() == "YES"): 
-                    break
-                if (ans.upper() == "N" or ans.upper() == "NO"): 
-                    quit = True
-                    break
+            if(u.keep_asking("Would you like to rename another playlist?")):
+                quit = True
     
 def delete_playlist(username):
     show_playlist = "SELECT playlist_id from usercreatesplaylist where username = '%s'" % (username)
@@ -137,13 +127,8 @@ def delete_playlist(username):
                 print("'%s' has been deleted" % (delete_name))
 
             #keep asking if want to delete another playlist until valid answer given 
-            while(True):
-                ans = input("Would you like to delete another playlist? [Y/N] ")
-                if (ans.upper() == "Y" or ans.upper() == "YES"): 
-                    break
-                if (ans.upper() == "N" or ans.upper() == "NO"): 
-                    quit = True
-                    break
+            if(u.keep_asking("Would you like to delete another playlist?")):
+                quit = True
 
 def your_playlist_screen(username):
     valid = False

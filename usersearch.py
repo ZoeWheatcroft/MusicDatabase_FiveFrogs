@@ -1,8 +1,8 @@
 import dbaccess
-import useraccess
+import useraccess as u
 
 # search by email
-def search_email(username): 
+def search_email(): 
     quit = False
     lst = None
     while(not quit):
@@ -15,12 +15,12 @@ def search_email(username):
         if len(lst) > 0: 
             for i in lst: 
                 print("User Name: %16s | Email: %18s" % (i[0], i[1]))
-        c = input("Would you like to search again? ")
-        if c.upper()[0] == "N": 
+        
+        if(u.keep_asking("Would you like to search again?")):
             quit = True
     return lst
 
 
 if __name__ == '__main__':
-    username = useraccess.login()
-    search_email(username)
+    username = u.login()
+    #search_email(username)

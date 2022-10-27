@@ -1,5 +1,5 @@
 import dbaccess
-import useraccess
+import useraccess as u
 
 # search by name
 def search_name(): 
@@ -18,9 +18,10 @@ def search_name():
         if len(lst) > 0: 
             for i in lst: 
                 print("Artist Name: %16s | Song Title: %18s | Length (sec): %2d | Number of plays: %3d | Album Name: %10s " % (i[0], i[1], i[2], i[3], i[4]))
-        c = input("Would you like to search again? [Y/N] ")
-        if c.upper()[0] == "N": 
+       
+        if(u.keep_asking("Would you like to search again?")):
             quit = True
+
     return lst
 
 def search_artist():
@@ -39,8 +40,7 @@ def search_artist():
         if len(lst) > 0: 
             for i in lst: 
                 print("Artist Name: %10s | Song Title: %18s | Length (sec): %2d | Number of plays: %3d | Album Name: %10s " % (i[0], i[1], i[2], i[3], i[4]))
-        c = input("Would you like to search again? [Y/N] ")
-        if c.upper()[0] == "N": 
+        if(u.keep_asking("Would you like to search again?")):
             quit = True
     return lst
 
@@ -61,8 +61,7 @@ def search_album():
         if len(lst) > 0: 
             for i in lst: 
                 print("Artist Name: %14s | Song Title: %18s | Length (sec): %2d | Number of plays: %3d | Album Name: %10s " % (i[0], i[1], i[2], i[3], i[4]))
-        c = input("Would you like to search again? [Y/N] ")
-        if c.upper()[0] == "N": 
+        if(u.keep_asking("Would you like to search again?")):
             quit = True
     return lst
 
@@ -83,8 +82,7 @@ def search_genre():
         if len(lst) > 0: 
             for i in lst: 
                 print("Genre Name: %6s | Artist Name: %14s | Song Title: %18s | Length (sec): %2d | Number of plays: %3d | Album Name: %10s " % (i[0], i[1], i[2], i[3], i[4], i[5]))
-        c = input("Would you like to search again? [Y/N] ")
-        if c.upper()[0] == "N": 
+        if(u.keep_asking("Would you like to search again?")):
             quit = True
     return lst
 
@@ -117,5 +115,5 @@ def search_screen():
 
 
 if __name__ == '__main__': 
-    username = useraccess.login()
+    username = u.login()
     search_screen(username)

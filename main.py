@@ -56,8 +56,8 @@ def main():
                 return 0
             else:
                 num = input("Incorrect value. Please try again: [1, 2, 3, 4, 5] ")
-        yn = input("Do you want to do something else? [Y/N] ")
-        if yn.lower()[0] == "n":
+
+        if(u.keep_asking("Do you want to do something else?")):
             quit = True
 
 
