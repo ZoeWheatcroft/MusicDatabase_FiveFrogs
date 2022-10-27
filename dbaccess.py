@@ -4,6 +4,7 @@ import json
 
 #This executes a statement and then closes the connection. 
 def execute_start(str):
+    conn = None
     try:
         json_object = None
         with open('login.json', 'r') as openfile:
@@ -34,10 +35,14 @@ def execute_start(str):
             conn.close()
     except:
         print("Connection failed")
+    finally: 
+        if conn != None: 
+            conn.close()
 
 
 # This returns what is stored in the cursor
 def execute_query(str):
+    conn = None
     try:
         json_object = None
         with open('login.json', 'r') as openfile:
@@ -71,6 +76,9 @@ def execute_query(str):
             return lst
     except:
         print("Connection failed")
+    finally: 
+        if conn != None: 
+            conn.close()
 
 if __name__ == '__main__': 
     #execute_start("SELECT * FROM user")
