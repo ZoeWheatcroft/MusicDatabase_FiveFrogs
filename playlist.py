@@ -5,15 +5,15 @@ Access_playlist is called by a wrapper function called play_playlist
 
 All other functions are helper functions for access_playlist
 """
-
-from turtle import pos
 import dbaccess
-import useraccess
-import songsearch
 import playsong
+import useraccess
 
 
 def print_songs(play_id):
+    lst = dbaccess.execute_query("SELECT playlist_name from playlist where playlist_id = '%s'" % (play_id))
+    pname = lst[0][0]
+    print("Songs in playlist: %s" %(pname))
     lst = dbaccess.execute_query("SELECT a.artist_name, s.title, s.length, k.album_name \
                 FROM song AS s \
                 LEFT JOIN artistcreatessong AS a ON(s.song_id = a.song_id) \
@@ -29,20 +29,7 @@ def print_songs(play_id):
         print("Artist Name: %16s | Song Title: %18s | Length (sec): %2d | Album Name: %10s " % (i[0], i[1], i[2], i[3]))
     print("---")
 
-"""
-Wrapper function for access_playlist
-Asks which playlist to open and then accesses it w/ access_playlist
-Uses name of playlist to get first playlist under that name 
-KNOWN BUGS: 
--can access other user's playlists
--no check to see if playlist exists under that name
--no check to see if there are multiple playlists under that name
-"""
-def play_playlist(user):
-    inp = input("What's the name of the playlist? ")
-    lst = dbaccess.execute_query("SELECT playlist_id FROM playlist WHERE playlist_name = '%s'" % (inp))
-    #should do a check here to see if there's multiple under same name
-    access_playlist(user, int(str(lst[0][0])))
+
 
 """
 Sam's stuff, have not read
@@ -125,32 +112,131 @@ def remove_song_from_playlist(p_id, user):
             for p in possible_matches:
                 if(p[0] == s[0]):
                     dbaccess.execute_start("DELETE FROM playlistcontainssong WHERE song_id = '%s'" % str(p[0]))
+
+
+"""
+Wrapper function for access_playlist
+Asks which playlist to open and then accesses it w/ access_playlist
+Uses name of playlist to get first playlist under that name 
+KNOWN BUGS: 
+-no check to see if there are multiple playlists under that name
+"""
+def see_playlist(user):
+    inp = input("What's the name of the playlist? ")
+    # This sql statement checks if the playlist belongs to a user, and whether the playlist even exists.
+    lst = dbaccess.execute_query("SELECT p.playlist_id FROM playlist AS p \
+        LEFT JOIN usercreatesplaylist AS u ON (u.playlist_id = p.playlist_id)\
+        WHERE p.playlist_name = '%s' AND u.username = '%s'" % (inp, user))
+    #should do a check here to see if there's multiple under same name
+    # This if checks if the sql statement gets anything. 
+    if len(lst) == 1:
+        playlist_screen(user, int(str(lst[0][0])))
+    else: 
+        print("Playlist not found!")
+
+# Users can sort by song name, artist’s name, genre, and released year
+def sort_by_name(play_id): 
+    lst = dbaccess.execute_query("SELECT a.artist_name, s.title, s.length, k.album_name \
+                FROM song AS s \
+                LEFT JOIN artistcreatessong AS a ON(s.song_id = a.song_id) \
+                LEFT JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
+                LEFT JOIN album as k ON (t.album_id = k.album_id) \
+                LEFT JOIN playlistcontainssong as ps ON (ps.song_id = s.song_id) \
+                LEFT JOIN playlist as p ON (p.playlist_id = ps.playlist_id)\
+                WHERE p.playlist_id = '%s' \
+                ORDER BY s.title ASC"%(play_id))
+    print("---")
+    print("SONGS: ")
+    for i in lst:
+        print("Artist Name: %16s | Song Title: %18s | Length (sec): %2d | Album Name: %10s " % (i[0], i[1], i[2], i[3]))
+    print("---")
+
+def sort_by_artist(play_id): 
+    lst = dbaccess.execute_query("SELECT a.artist_name, s.title, s.length, k.album_name \
+                FROM song AS s \
+                LEFT JOIN artistcreatessong AS a ON(s.song_id = a.song_id) \
+                LEFT JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
+                LEFT JOIN album as k ON (t.album_id = k.album_id) \
+                LEFT JOIN playlistcontainssong as ps ON (ps.song_id = s.song_id) \
+                LEFT JOIN playlist as p ON (p.playlist_id = ps.playlist_id)\
+                WHERE p.playlist_id = '%s' \
+                ORDER BY a.artist_name ASC"%(play_id))
+    print("---")
+    print("SONGS: ")
+    for i in lst:
+        print("Artist Name: %16s | Song Title: %18s | Length (sec): %2d | Album Name: %10s " % (i[0], i[1], i[2], i[3]))
+    print("---")
+
+def sort_by_genre(play_id): 
+    lst = dbaccess.execute_query("SELECT g.genre_name, a.artist_name, s.title, s.length, k.album_name \
+                FROM song AS s \
+                LEFT JOIN artistcreatessong AS a ON(s.song_id = a.song_id) \
+                LEFT JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
+                LEFT JOIN album as k ON (t.album_id = k.album_id) \
+                LEFT JOIN songhasgenre as g ON (g.song_id = s.song_id) \
+                LEFT JOIN playlistcontainssong as ps ON (ps.song_id = s.song_id) \
+                LEFT JOIN playlist as p ON (p.playlist_id = ps.playlist_id)\
+                WHERE p.playlist_id = '%s' \
+                ORDER BY g.genre_name ASC"%(play_id))
+    print("---")
+    print("SONGS: ")
+    for i in lst:
+        print("Genre Name: %6s | Artist Name: %16s | Song Title: %18s | Length (sec): %2d | Album Name: %10s " % (i[0], i[1], i[2], i[3], i[4]))
+    print("---")
+
+def sort_by_month(play_id): 
+    lst = dbaccess.execute_query("SELECT a.artist_name, s.title, s.length, k.album_name, EXTRACT(MONTH from s.song_release_date) AS month \
+                FROM song AS s \
+                LEFT JOIN artistcreatessong AS a ON(s.song_id = a.song_id) \
+                LEFT JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
+                LEFT JOIN album as k ON (t.album_id = k.album_id) \
+                LEFT JOIN playlistcontainssong as ps ON (ps.song_id = s.song_id) \
+                LEFT JOIN playlist as p ON (p.playlist_id = ps.playlist_id)\
+                WHERE p.playlist_id = '%s' \
+                ORDER BY month ASC"%(play_id))
+    print("---")
+    print("SONGS: ")
+    for i in lst:
+        print("Artist Name: %16s | Song Title: %18s | Length (sec): %2d | Album Name: %10s | Month: %s" % (i[0], i[1], i[2], i[3], i[4]))
+    print("---")
+
+
+def sort_playlist(playlist_id): 
+    inp = input("Sort songs by [1] Song name, [2] Artist name, [3] Genre, [4] Released year ")
+    if(inp == "1"):
+        sort_by_name(playlist_id)
+    elif(inp == "2"): 
+        sort_by_artist(playlist_id)
+    elif(inp == "3"): 
+        sort_by_artist(playlist_id)
+    elif(inp == "4"): 
+        sort_by_artist(playlist_id)
+    else: 
+        print("invalid input")
     
+
+
+            
+
 """
 print options of actions on playlist
 UPDATE IF OPTIONS CHANGE
 """
 def print_options():
     print("")
-    print("0- list songs")
-    print("1- play song")
-    print("2- sort by...")
-    print("3- add song")
-    print("4- delete song")
-    print("5- exit")
+    print("0 - List songs")
+    print("1 - Play song")
+    print("2 - Sort playlist")
+    print("3 - Add song")
+    print("4 - Delete song")
+    print("5 - Exit")
 
 """
 main function 
 """
-def access_playlist(user, playlist_id): 
+def playlist_screen(user, playlist_id): 
     #get the playlist name 
-    '''
-    lst = dbaccess.execute_query("SELECT playlist_name from playlist where playlist_id = '%s'" % (playlist_id))
-    pname = lst[0]
-    songs = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong WHERE playlist_id = '%s'" % playlist_id)
-    print_songs(songs)'''
     print_songs(playlist_id)
-    print('currently accessing playlist: ')
     print_options()
     num = input("Enter your selection here: ")
     #get player actions and perform while valid = true
@@ -158,45 +244,35 @@ def access_playlist(user, playlist_id):
     while not valid:
         #print out the songs
         if num == "0":
-            songs = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong WHERE playlist_id = '%s'" % playlist_id)
-            print_songs(songs)
+            print_songs(playlist_id)
         #play song
         elif num == "1": 
-            valid = False
+            valid = True
             play_song_on_playlist(playlist_id, user)
         #sort by 
         elif num == "2": 
-            inp = input("Sort songs (1)ascendingly or (2)descendingly? (1, 2) ")
-            if(inp == "1"):
-                songs = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong WHERE playlist_id = '%d' ORDER BY song_id ASC" % playlist_id)
-            
-            else:
-                songs = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong WHERE playlist_id = '%d' ORDER BY song_id DESC" % playlist_id)
-            
-            print_songs(songs)
-            valid = False
+            valid = True
+            sort_playlist(playlist_id)
         #add a song to the playlist
         elif num == "3":
+            valid = True
             insert_into_playlist(playlist_id)
-            valid = False
         #delete a song from the playlist
         elif num == "4": 
-            remove_song_from_playlist(playlist_id, user)
-            valid = False
+            valid = True
+            remove_song_from_playlist(playlist_id, user)   
         #exit
         elif num == "5":
-            valid = True
+            return 0
         elif num == "h" or num == "H":
             print_options()
-            valid = False
         #got bad input
         else: 
-            valid = False
             print("Incorrect input, please retry")
-        #get input for next round if not exiting
+        #get input for next round if not exiting 9THIS NEEDS TO BE ANOTHER WHILE)
         if(num != "5"):
             num = input("(h for options) Enter your selection here: ")
 
 if __name__ == '__main__': 
-    print_songs("304262")
+    see_playlist("lh5844")
     
