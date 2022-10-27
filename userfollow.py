@@ -1,6 +1,7 @@
 import dbaccess
-import useraccess
+import useraccess as u
 import usersearch
+
 
 def follow_user(username):
     quit = False
@@ -18,8 +19,8 @@ def follow_user(username):
                 print("User %s is already followed!" % (word))
         else: 
             print("User %s doesn't exist!" % (word))
-        c = input("Would you like to follow another user? ")
-        if c.upper()[0] == 'N':
+       
+        if(u.keep_asking("Would you like to follow another user?")):
             quit = True
 
 
@@ -38,9 +39,10 @@ def follow_artist(username):
                 print("Artist %s is already followed!" % (word))
         else: 
             print("Artist %s doesn't exist!" % (word))
-        c = input("Would you like to follow another artist? ")
-        if c.upper()[0] == 'N':
+    
+        if(u.keep_asking("Would you like to follow another artist?")):
             quit = True
+
 
 def unfollow_artist(username):
     quit = False
@@ -52,9 +54,10 @@ def unfollow_artist(username):
                 WHERE username = '%s' AND artist_name = '%s'" % (username, word) )
         else: 
             print("You do not follow this artist.")
-        c = input("Would you like to unfollow another artist? ")
-        if c.upper()[0] == 'N':
+
+        if(u.keep_asking("Would you like to unfollow another artist?")):
             quit = True
+
 
 def unfollow_user(username):
     quit = False
@@ -66,9 +69,10 @@ def unfollow_user(username):
                 WHERE username = '%s' AND follows = '%s'" % (username, word))
         else: 
             print("You do not follow this user.")
-        c = input("Would you like to unfollow another user? ")
-        if c.upper()[0] == 'N':
+
+        if(u.keep_asking("Would you like to unfollow another user?")):
             quit = True
+
 
 def follow_screen(username):
     view_user_followlist(username)
@@ -78,36 +82,42 @@ def follow_screen(username):
     print(dash_str)
 
     print("What would you like to do?")
-    print("  1. Follow another user")
-    print("  2. Unfollow another user")
-    print("  3. Follow an artist")
-    print("  4. Unfollow an artist")
-    print("  5. Exit")
-    num = input("Enter your selection here: [1, 2, 3, 4, 5] ")
+    print("  1. Search for user")
+    print("  2. Follow another user")
+    print("  3. Unfollow another user")
+    print("  4. Follow an artist")
+    print("  5. Unfollow an artist")
+    print("  6. Exit")
+    num = input("Enter your selection here: [1, 2, 3, 4, 5, 6] ")
     valid = False
     while not valid:
         if num == "1":
             valid = True
-            follow_user(username)
+            usersearch.search_email()
         elif num == "2":
             valid = True
-            unfollow_user(username)
+            follow_user(username)
         elif num == "3":
             valid = True
-            follow_artist(username)
+            unfollow_user(username)
         elif num == "4":
             valid = True
-            unfollow_artist(username)
+            follow_artist(username)
         elif num == "5":
+            valid = True
+            unfollow_artist(username)
+        elif num == "6":
             break
         else:
             num = input("Incorrect value. Please try again: [1, 2, 3, 4, 5] ")
+
 
 def print_list(list_name, dash_len):
     dash_str = "-" * dash_len
     print(dash_str)
     print("%s" % (list_name.center(dash_len)))
     print(dash_str)
+
 
 def view_user_followlist(username):
     dash_len = 36
@@ -123,6 +133,7 @@ def view_user_followlist(username):
         for user in user_followlist:
             print("%s" % (user[0].center(dash_len)))
 
+
 def view_artist_followlist(username):
     dash_len = 36
     list_name = "~*~ Your Artist Following ~*~"
@@ -136,6 +147,7 @@ def view_artist_followlist(username):
     else: 
         for user in user_followlist:
             print("%s" % (user[0].center(dash_len)))
+
 
 if __name__ == '__main__':
     #username = useraccess.login()
