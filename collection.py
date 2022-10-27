@@ -14,14 +14,14 @@ def create_playlist(username):
             random_id = r.randint(1, 99999) 
             playlist_id = int('%i%i' % (30,random_id))
     
-            sql_check = "SELECT playlist_id FROM playlist WHERE playlist_id = " + str(playlist_id)
+            sql_check = "SELECT playlist_id FROM playlist WHERE playlist_id = '%s'" % (playlist_id)
             check_unique = dbaccess.execute_query(sql_check)
             if not check_unique:
                 unique_bool = True
     
-        insert_playlist = "INSERT into playlist (playlist_id, playlist_name) VALUES('"+ str(playlist_id) + "', '" + name + "');"
+        insert_playlist = "INSERT into playlist (playlist_id, playlist_name) VALUES('%s', '%s')" % (playlist_id, name) 
         dbaccess.execute_start(insert_playlist)
-        insert_creates = "INSERT into usercreatesplaylist (username, playlist_id) VALUES('" + username + "', '" + str(playlist_id) + "');"
+        insert_creates = "INSERT into usercreatesplaylist (username, playlist_id) VALUES('%s', '%s')" % (username, playlist_id) 
         dbaccess.execute_start(insert_creates)
 
         print("Playlist called '" + name + "' has been made")
@@ -57,9 +57,9 @@ def view_playlist(username):
                             LEFT JOIN playlistcontainssong AS c ON (p.playlist_id = c.playlist_id)\
                             LEFT JOIN song AS s ON (s.song_id = c.song_id)\
                             LEFT JOIN usercreatesplaylist AS u on (p.playlist_id = u.playlist_id) \
-                            WHERE u.username = '" + username + "'" +\
-                            "GROUP BY p.playlist_id \
-                            ORDER BY p.playlist_name ASC"
+                            WHERE u.username = '%s'\
+                            GROUP BY p.playlist_id \
+                            ORDER BY p.playlist_name ASC" % (username)
 
         all_playlists = dbaccess.execute_query(playlist_info)
         for playlist in all_playlists: 
