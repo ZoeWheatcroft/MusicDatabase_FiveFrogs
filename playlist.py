@@ -8,18 +8,37 @@ def print_songs(songs):
     print("---")
     print("SONGS: ")
     for song in songs:
-        print("| ", song)
+        print("| ", song[0])
         song_name = dbaccess.execute_query("SELECT title FROM song where song_id ='%s'" % song)
-        print(song_name)
+        print(song_name[0][0])
     print("---")
 
 def play_playlist(user):
     inp = input("What's the name of the playlist? ")
     lst = dbaccess.execute_query("SELECT playlist_id FROM playlist WHERE playlist_name = '%s'" % (inp))
-    if(len(lst) != 1)
-    for p in lst:
-        print(p)
-    access_playlist(user, str(lst[0][0]))
+    print(lst)
+    access_playlist(user, int(str(lst[0][0])))
+
+def remove_album_from_playlist(playlist_id):
+    quit = False
+    while(not quit):
+        word = input("What is the name of the album that you would like to remove? ")
+        # First, find the album with the given name
+        album = dbaccess.execute_query("SELECT album_id FROM album WHERE album_name = '%s'"%(word))
+        if len(album) == 1:
+            songs = dbaccess.execute_query("SELECT song_id FROM albumcontainssong WHERE album_id = '%s'"%(album))
+            # Now remove the songs from the playlist
+            if len(songs) != 0:
+                quit = True
+                for s in songs:
+                    dbaccess.execute_start("DELETE FROM playlistcontainssong WHERE song_id = '"+ s +"' AND playlist_id = '"+ playlist_id +"'")
+            else:
+                print("There are no songs in the playlist from this album, please try again")
+        elif len(album) == 0:
+            print("There is no album with this name, would you like to try again?")
+            c = input("[Y] / [N]")
+            if c.upper()[0] == 'N':
+                quit = True
 
 
 def access_playlist(user, playlist_id): 
@@ -27,7 +46,7 @@ def access_playlist(user, playlist_id):
     lst = dbaccess.execute_query("SELECT playlist_name from playlist where playlist_id = '%s'" % (playlist_id))
     pname = lst[0]
     songs = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong WHERE playlist_id = '%s'" % playlist_id)
-    print_songs(songs);
+    print_songs(songs)
     print('currently accessing playlist: ', pname)
     print("")
     print("0 - list songs")
