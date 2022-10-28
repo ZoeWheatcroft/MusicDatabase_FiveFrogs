@@ -132,9 +132,10 @@ def play_song_on_playlist(p_id, user):
             playsong.play_songID(s_id_found, user)
         else:
             print("Sorry, that song isn't in your playlist!")
-
-        if(u.keep_asking("Would you like to play another song?")):
+        var = u.keep_asking("Would you like to play another song?")
+        if(var):
             quit = True
+            break
         #playsong.play_songID(s_id, user)
 
 """
@@ -306,7 +307,7 @@ def playlist_screen(user, playlist_id):
             #sort by 
             elif num == "2":
                 valid = True
-                playsong.play_playlistbyid(playlist_id)
+                playsong.play_playlistbyid(user, playlist_id)
             elif num == "3": 
                 valid = True
                 sort_playlist(playlist_id)
