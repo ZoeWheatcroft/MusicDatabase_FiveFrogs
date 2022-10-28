@@ -117,5 +117,4 @@ def search_screen():
 
 
 if __name__ == '__main__': 
-    username = u.login()
-    search_screen(username)
+    search_screen()
