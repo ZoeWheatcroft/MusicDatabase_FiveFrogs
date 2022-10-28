@@ -47,9 +47,12 @@ def play_song(user):
 
 def play_playlistbyid(user, play_id): 
     # select all songs in the playlist
-    lst = dbaccess.execute_query("SELECT song_id\
-                FROM playlistcontainssong \
-                WHERE playlist_id = '%s'" % ( play_id))
+    lst = dbaccess.execute_query("SELECT s.song_id \
+                FROM song AS s \
+                INNER JOIN artistcreatessong AS a ON(s.song_id = a.song_id) \
+                INNER JOIN playlistcontainssong as ps ON (ps.song_id = s.song_id) \
+                WHERE ps.playlist_id = '%s' \
+                ORDER BY s.title, a.artist_name ASC"%(play_id))
     for i in lst: 
         play_songID(i[0], user)
 
