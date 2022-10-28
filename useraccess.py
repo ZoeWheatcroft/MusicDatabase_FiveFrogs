@@ -16,7 +16,7 @@ def login():
     username = input("Enter your username: ")
     lst = dbaccess.execute_query("SELECT username, password from users WHERE username = '%s'" % (username))
     # MAKE SURE TO DELETE this later
-    print(lst)
+    #print(lst)
     if len(lst) != 0:
         password = input("Enter your password: ")
         while password != lst[0][1]: 
