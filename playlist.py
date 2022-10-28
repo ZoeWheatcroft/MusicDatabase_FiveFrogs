@@ -199,7 +199,7 @@ def sort_by_artist(play_id):
     print("---")
 
 def sort_by_genre(play_id): 
-    lst = dbaccess.execute_query("SELECT s.song_id, g.genre_name, a.artist_name, s.title, s.length, k.album_name \
+    lst = dbaccess.execute_query("SELECT  g.genre_name, a.artist_name, s.title, s.length, k.album_name \
                 FROM song AS s \
                 INNER JOIN artistcreatessong AS a ON(s.song_id = a.song_id)  \
                 INNER JOIN playlistcontainssong as ps ON (ps.song_id = s.song_id) \
@@ -208,12 +208,12 @@ def sort_by_genre(play_id):
                 INNER JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
                 LEFT JOIN album as k ON (t.album_id = k.album_id) \
                 WHERE p.playlist_id = '%s' \
-                GROUP BY s.song_id, g.genre_name, a.artist_name, s.title, s.length, k.album_name\
+                GROUP BY  g.genre_name, a.artist_name, s.title, s.length, k.album_name\
                 ORDER BY g.genre_name ASC"%(play_id))
     print("---")
     print("SONGS: ")
     for i in lst:
-        print("%s Genre Name: %6s | Artist Name: %16s | Song Title: %18s | Length (sec): %2d | Album Name: %10s " % (i[0], i[1], i[2], i[3], i[4], i[5]))
+        print("Genre Name: %6s | Artist Name: %16s | Song Title: %18s | Length (sec): %2d | Album Name: %10s " % (i[0], i[1], i[2], i[3], i[4]))
     print("---")
 
 def sort_by_month(play_id): 
@@ -293,46 +293,49 @@ def playlist_screen(user, playlist_id):
     print_options()
     num = input("Enter your selection here: ")
     #get player actions and perform while valid = true
-    valid = False
-    while not valid:
-        #print out the songs
-        if num == "0":
-            print_songs(playlist_id)
-        #play song
-        elif num == "1": 
-            valid = True
-            play_song_on_playlist(playlist_id, user)
-        #sort by 
-        elif num == "2":
-            valid = True
-            playsong.play_playlistbyid(playlist_id)
-        elif num == "3": 
-            valid = True
-            sort_playlist(playlist_id)
-        #add a song to the playlist
-        elif num == "4":
-            valid = True
-            insert_into_playlist(playlist_id)
-        #delete a song from the playlist
-        elif num == "5": 
-            valid = True
-            remove_song_from_playlist(playlist_id, user)   
-        #exit
-        elif num == "6":
-            valid = True
-            add_album_to_playlist(playlist_id)
-        elif num == "7":
-            remove_album_from_playlist(playlist_id)
-        elif num == "8":
-            return 0
-        elif num == "h" or num == "H":
-            print_options()
-        #got bad input
-        else: 
-            print("Incorrect input, please retry")
-        #get input for next round if not exiting 9THIS NEEDS TO BE ANOTHER WHILE)
-        if(num != "5"):
-            num = input("(h for options) Enter your selection here: ")
+    quit = False
+    while not quit:
+        valid = False
+        while not valid:
+            #print out the songs
+            if num == "0":
+                print_songs(playlist_id)
+            #play song
+            elif num == "1": 
+                valid = True
+                play_song_on_playlist(playlist_id, user)
+            #sort by 
+            elif num == "2":
+                valid = True
+                playsong.play_playlistbyid(playlist_id)
+            elif num == "3": 
+                valid = True
+                sort_playlist(playlist_id)
+            #add a song to the playlist
+            elif num == "4":
+                valid = True
+                insert_into_playlist(playlist_id)
+            #delete a song from the playlist
+            elif num == "5": 
+                valid = True
+                remove_song_from_playlist(playlist_id, user)   
+            elif num == "6":
+                valid = True
+                add_album_to_playlist(playlist_id)
+            elif num == "7":
+                remove_album_from_playlist(playlist_id)
+            elif num == "8":
+                quit = True
+                break
+            elif num == "h" or num == "H":
+                print_options()
+            #got bad input
+            else: 
+                print("Incorrect input, please retry")
+            #get input for next round if not exiting (THIS NEEDS TO BE ANOTHER WHILE)
+            if(num != "5"):
+                num = input("(h for options) Enter your selection here: ")
+        
 
 if __name__ == '__main__': 
     user = useraccess.login()
