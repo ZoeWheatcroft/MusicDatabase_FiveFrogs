@@ -277,12 +277,13 @@ def print_options():
     print("")
     print("0 - List songs")
     print("1 - Play song")
-    print("2 - Sort playlist")
-    print("3 - Add song")
-    print("4 - Delete song")
-    print("5 - Add album")
-    print("6 - Delete album")
-    print("7 - Exit")
+    print("2 - Play entire playlist")
+    print("3 - Sort playlist")
+    print("4 - Add song")
+    print("5 - Delete song")
+    print("6 - Add album")
+    print("7 - Delete album")
+    print("8 - Exit")
 """
 main function 
 """
@@ -302,24 +303,27 @@ def playlist_screen(user, playlist_id):
             valid = True
             play_song_on_playlist(playlist_id, user)
         #sort by 
-        elif num == "2": 
+        elif num == "2":
+            valid = True
+            playsong.play_playlistbyid(playlist_id)
+        elif num == "3": 
             valid = True
             sort_playlist(playlist_id)
         #add a song to the playlist
-        elif num == "3":
+        elif num == "4":
             valid = True
             insert_into_playlist(playlist_id)
         #delete a song from the playlist
-        elif num == "4": 
+        elif num == "5": 
             valid = True
             remove_song_from_playlist(playlist_id, user)   
         #exit
-        elif num == "5":
+        elif num == "6":
             valid = True
             add_album_to_playlist(playlist_id)
-        elif num == "6":
-            remove_album_from_playlist(playlist_id)
         elif num == "7":
+            remove_album_from_playlist(playlist_id)
+        elif num == "8":
             return 0
         elif num == "h" or num == "H":
             print_options()
