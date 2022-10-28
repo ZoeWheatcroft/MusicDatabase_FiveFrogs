@@ -7,7 +7,7 @@ All other functions are helper functions for playlist_screen
 """
 import dbaccess
 import playsong
-import useraccess
+import useraccess as u
 
 
 def print_songs(play_id):
@@ -60,10 +60,9 @@ def remove_album_from_playlist(playlist_id):
             else:
                 print("There are no songs in this album, please try again.")
         elif len(album) == 0:
-            print("There is no album with this name, would you like to try again?")
-            c = input("[Y] / [N]: ")
-            if c.upper()[0] == 'N':
-                quit = True
+            print("There is no album with this name")
+        if(u.keep_asking("Would you like to try again?")):
+            quit = True
 
 """
 Adds an entire album to a playlist
@@ -98,10 +97,10 @@ def add_album_to_playlist(playlist_id):
             else:
                 print("There are no songs in this album, please try again.")
         elif len(album) == 0:
-            print("There is no album with this name, would you like to try again?")
-            c = input("[Y] / [N]: ")
-            if c.upper()[0] == 'N':
-                quit = True
+            print("There is no album with this name")
+            
+        if(u.keep_asking("Would you like to try again?")):
+            quit = True
 
 
 """
@@ -114,24 +113,29 @@ KNOWN BUGS:
 -does not ask user *which* song under that name they mean
 """
 def play_song_on_playlist(p_id, user):
-    #get the name of the song that's being player
-    s_name = input("Which song? ")
-    #get list of songs under that name
-    lst_possible_matches = dbaccess.execute_query("SELECT song_id FROM song WHERE title = '%s'" % s_name)
-    #check that song is in the play list
-    lst_songsinplaylist = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong WHERE playlist_id = '%s'" % p_id)
-    song_in_playlist = False
-    s_id_found= 0
-    for id in lst_songsinplaylist:
-        for pmatch in lst_possible_matches:
-            if(id[0] == pmatch[0]):
-                song_in_playlist = True
-                s_id_found = id[0]
-    if(song_in_playlist):
-        playsong.play_songID(s_id_found, user)
-    else:
-        print("Sorry, that song isn't in your playlist!")
-    #playsong.play_songID(s_id, user)
+    quit = False
+    while(not quit):
+        #get the name of the song that's being played
+        s_name = input("Which song? ")
+        #get list of songs under that name
+        lst_possible_matches = dbaccess.execute_query("SELECT song_id FROM song WHERE title = '%s'" % s_name)
+        #check that song is in the play list
+        lst_songsinplaylist = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong WHERE playlist_id = '%s'" % p_id)
+        song_in_playlist = False
+        s_id_found= 0
+        for id in lst_songsinplaylist:
+            for pmatch in lst_possible_matches:
+                if(id[0] == pmatch[0]):
+                    song_in_playlist = True
+                    s_id_found = id[0]
+        if(song_in_playlist):
+            playsong.play_songID(s_id_found, user)
+        else:
+            print("Sorry, that song isn't in your playlist!")
+
+        if(u.keep_asking("Would you like to play another song?")):
+            quit = True
+        #playsong.play_songID(s_id, user)
 
 """
 add a song into a playlist
@@ -274,16 +278,14 @@ print options of actions on playlist
 UPDATE IF OPTIONS CHANGE
 """
 def print_options():
-    print("")
-    print("0 - List songs")
-    print("1 - Play song")
-    print("2 - Play entire playlist")
-    print("3 - Sort playlist")
-    print("4 - Add song")
-    print("5 - Delete song")
-    print("6 - Add album")
-    print("7 - Delete album")
-    print("8 - Exit")
+    print("  1. Play song")
+    print("  2. Play entire playlist")
+    print("  3. Sort playlist")
+    print("  4. Add song")
+    print("  5. Delete song")
+    print("  6. Add album")
+    print("  7. Delete album")
+    print("  8. Exit")
 """
 main function 
 """
@@ -291,17 +293,14 @@ def playlist_screen(user, playlist_id):
     #get the playlist name 
     print_songs(playlist_id)
     print_options()
-    num = input("Enter your selection here: ")
+    num = input("[1, 2, 3, 4, 5, 6, 7, 8]: ")
     #get player actions and perform while valid = true
     quit = False
     while not quit:
         valid = False
         while not valid:
-            #print out the songs
-            if num == "0":
-                print_songs(playlist_id)
             #play song
-            elif num == "1": 
+            if num == "1": 
                 valid = True
                 play_song_on_playlist(playlist_id, user)
             #sort by 
@@ -331,13 +330,13 @@ def playlist_screen(user, playlist_id):
                 print_options()
             #got bad input
             else: 
-                print("Incorrect input, please retry")
+                num = input("Incorrect value. Please try again: [1, 2, 3, 4, 5, 6, 7, 8] ")
             #get input for next round if not exiting (THIS NEEDS TO BE ANOTHER WHILE)
-            if(num != "5"):
-                num = input("(h for options) Enter your selection here: ")
+            #if(num != "5"):
+                #num = input("(h for options) Enter your selection here: ")
         
 
 if __name__ == '__main__': 
-    user = useraccess.login()
+    user = u.login()
     see_playlist(user)
     

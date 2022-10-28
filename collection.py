@@ -2,6 +2,7 @@ import dbaccess
 import useraccess as u
 import random as r
 import datetime
+import playlist as p
 from userfollow import print_list
 
 def create_playlist(username):
@@ -146,8 +147,7 @@ def your_playlist_screen(username):
         num = input("[1, 2, 3, 4]: ")
         if num == "1":
             valid = True
-            #view_playlist(username)
-            print("work in progress but should lead to list of songs under a playlist")
+            p.see_playlist(username)
         elif num == "2":
             valid = True
             rename_playlist(username)
