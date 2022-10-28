@@ -29,7 +29,7 @@ def play_song(user):
     if (len(lst) > 1): 
         print("Multiple songs found!")
         for i in lst: 
-            print("Artist Name: %16s | Song Title: %18s" % (i[2], i[1]))
+            print("Artist Name: %16s | Song Title: %18s | %s" % (i[2], i[1], i[0]))
         artist = input("Who is this song by? ")
         lst = dbaccess.execute_query("SELECT s.song_id, s.title, a.artist_name from SONG AS s \
         INNER JOIN artistcreatessong AS a ON (s.song_id = a.song_id) where s.title = '%s' AND a.artist_name = '%s'" % (name, artist))
@@ -55,4 +55,4 @@ def play_playlistbyid(user, play_id):
 
 if __name__ == '__main__': 
     username = useraccess.login()
-    play_song(useraccess)
+    play_song(username)
