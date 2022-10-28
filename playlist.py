@@ -8,7 +8,15 @@ All other functions are helper functions for playlist_screen
 import dbaccess
 import playsong
 import useraccess as u
+from userfollow import print_list
+import collection as c
 
+def song_header(dash_len):
+    list_name = "~*~ Songs in Playlist ~*~"
+    print_list(list_name, dash_len)
+    line = "-" * dash_len
+    print("%18s | %18s | %10s | %10s" % ("Artist Name", "Song Title", "Length", "Album Name"))
+    print(line)
 
 def print_songs(play_id):
     lst = dbaccess.execute_query("SELECT playlist_name from playlist where playlist_id = '%s'" % (play_id))
@@ -23,11 +31,13 @@ def print_songs(play_id):
                 INNER JOIN playlist as p ON (p.playlist_id = ps.playlist_id)\
                 WHERE p.playlist_id = '%s' \
                 ORDER BY s.title, a.artist_name ASC"%(play_id))
-    print("---")
-    print("SONGS: ")
+    dash_len = 70
+    song_header(dash_len)
     for i in lst:
-        print("Artist Name: %16s | Song Title: %18s | Length (sec): %2d | Album Name: %10s " % (i[0], i[1], i[2], i[3]))
-    print("---")
+        length = c.convert_mins(i[2])
+        print("%18s | %18s | %10s | %10s " % (i[0], i[1], length, i[3]))
+    line = "-" * dash_len
+    print(line)
 
 
 
@@ -132,40 +142,47 @@ def play_song_on_playlist(p_id, user):
             playsong.play_songID(s_id_found, user)
         else:
             print("Sorry, that song isn't in your playlist!")
-        var = u.keep_asking("Would you like to play another song?")
-        if(var):
+        if(u.keep_asking("Would you like to play another song?")):
             quit = True
-            break
         #playsong.play_songID(s_id, user)
 
 """
 add a song into a playlist
 """
 def insert_into_playlist(p_id):
-    s_name = input("What's the name of the song you'd like to add? ")
-    s_id = dbaccess.execute_query("SELECT song_id FROM song WHERE title = '%s'" % s_name)
-    sqlstring = "INSERT into playlistcontainssong (playlist_id, song_id) VALUES('" +  str(p_id) + "', '" + str(s_id[0][0]) + "');"
-    dbaccess.execute_start(sqlstring) 
-    print("inserted song!")
+    quit = False
+    while(not quit):
+        s_name = input("What's the name of the song you'd like to add? ")
+        s_id = dbaccess.execute_query("SELECT song_id FROM song WHERE title = '%s'" % s_name)
+        sqlstring = "INSERT into playlistcontainssong (playlist_id, song_id) VALUES('" +  str(p_id) + "', '" + str(s_id[0][0]) + "');"
+        dbaccess.execute_start(sqlstring) 
+        print("inserted song!")
+
+        if(u.keep_asking("Would you like to add another song?")):
+            quit = True
 
 """
 remove a song from the playlist
 """
 def remove_song_from_playlist(p_id, user):
-    inp = input("What's the name of the song you'd like to remove? ")
-    possible_matches = dbaccess.execute_query("SELECT song_id FROM song WHERE title = '%s'" % inp)
-    if(len(possible_matches) == 0):
-        print("That's not a song, sorry! ")
-        return 0
-    else:
-        print("removing song: '%s' ..." % inp)
-        #get a list of every song in the playlist
-        playlist_songs = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong where playlist_id = '%s'" % p_id)
-        #check if any of the possible matches are also on the list
-        for s in playlist_songs:
-            for p in possible_matches:
-                if(p[0] == s[0]):
-                    dbaccess.execute_start("DELETE FROM playlistcontainssong WHERE song_id = '%s'" % str(p[0]))
+    quit = False
+    while(not quit):
+        inp = input("What's the name of the song you'd like to remove? ")
+        possible_matches = dbaccess.execute_query("SELECT song_id FROM song WHERE title = '%s'" % inp)
+        if(len(possible_matches) == 0):
+            print("That's not a song, sorry! ")
+            return 0
+        else:
+            print("removing song: '%s' ..." % inp)
+            #get a list of every song in the playlist
+            playlist_songs = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong where playlist_id = '%s'" % p_id)
+            #check if any of the possible matches are also on the list
+            for s in playlist_songs:
+                for p in possible_matches:
+                    if(p[0] == s[0]):
+                        dbaccess.execute_start("DELETE FROM playlistcontainssong WHERE song_id = '%s'" % str(p[0]))
+        if(u.keep_asking("Would you like to remove another song?")):
+            quit = True
 
 
 # Users can sort by song name, artist’s name, genre, and released year
@@ -240,17 +257,21 @@ def sort_by_month(play_id):
 
 
 def sort_playlist(playlist_id): 
-    inp = input("Sort songs by [1] Song name, [2] Artist name, [3] Genre, [4] Released month ")
-    if(inp == "1"):
-        sort_by_name(playlist_id)
-    elif(inp == "2"): 
-        sort_by_artist(playlist_id)
-    elif(inp == "3"): 
-        sort_by_genre(playlist_id)
-    elif(inp == "4"): 
-        sort_by_month(playlist_id)
-    else: 
-        print("invalid input")
+    quit = False
+    while(not quit):
+        inp = input("Sort songs by [1] Song name, [2] Artist name, [3] Genre, [4] Released month ")
+        if(inp == "1"):
+            sort_by_name(playlist_id)
+        elif(inp == "2"): 
+            sort_by_artist(playlist_id)
+        elif(inp == "3"): 
+            sort_by_genre(playlist_id)
+        elif(inp == "4"): 
+            sort_by_month(playlist_id)
+        else: 
+            print("invalid input")
+        if(u.keep_asking("Would you like to sort your playlist again?")):
+            quit = True
     
 
 """
@@ -261,17 +282,22 @@ KNOWN BUGS:
 -no check to see if there are multiple playlists under that name
 """
 def see_playlist(user):
-    inp = input("What's the name of the playlist? ")
-    # This sql statement checks if the playlist belongs to a user, and whether the playlist even exists.
-    lst = dbaccess.execute_query("SELECT p.playlist_id FROM playlist AS p \
-        LEFT JOIN usercreatesplaylist AS u ON (u.playlist_id = p.playlist_id)\
-        WHERE p.playlist_name = '%s' AND u.username = '%s'" % (inp, user))
-    #should do a check here to see if there's multiple under same name
-    # This if checks if the sql statement gets anything. 
-    if len(lst) == 1:
-        playlist_screen(user, int(str(lst[0][0])))
-    else: 
-        print("Playlist not found!")
+    quit = False
+    while(not quit):
+        inp = input("What's the name of the playlist? ")
+        # This sql statement checks if the playlist belongs to a user, and whether the playlist even exists.
+        lst = dbaccess.execute_query("SELECT p.playlist_id FROM playlist AS p \
+            LEFT JOIN usercreatesplaylist AS u ON (u.playlist_id = p.playlist_id)\
+            WHERE p.playlist_name = '%s' AND u.username = '%s'" % (inp, user))
+        #should do a check here to see if there's multiple under same name
+        # This if checks if the sql statement gets anything. 
+        if len(lst) == 1:
+            playlist_screen(user, int(str(lst[0][0])))
+        else: 
+            print("Playlist not found!")
+
+        if(u.keep_asking("Would you like to see another playlist?")):
+            quit = True
             
 
 """
@@ -296,42 +322,42 @@ def playlist_screen(user, playlist_id):
     print_options()
     num = input("[1, 2, 3, 4, 5, 6, 7, 8]: ")
     #get player actions and perform while valid = true
-    quit = False
-    while not quit:
-        valid = False
-        while not valid:
-            #play song
-            if num == "1": 
-                valid = True
-                play_song_on_playlist(playlist_id, user)
-            #sort by 
-            elif num == "2":
-                valid = True
-                playsong.play_playlistbyid(user, playlist_id)
-            elif num == "3": 
-                valid = True
-                sort_playlist(playlist_id)
-            #add a song to the playlist
-            elif num == "4":
-                valid = True
-                insert_into_playlist(playlist_id)
-            #delete a song from the playlist
-            elif num == "5": 
-                valid = True
-                remove_song_from_playlist(playlist_id, user)   
-            elif num == "6":
-                valid = True
-                add_album_to_playlist(playlist_id)
-            elif num == "7":
-                remove_album_from_playlist(playlist_id)
-            elif num == "8":
-                quit = True
-                break
-            elif num == "h" or num == "H":
-                print_options()
-            #got bad input
-            else: 
-                num = input("Incorrect value. Please try again: [1, 2, 3, 4, 5, 6, 7, 8] ")
+    #quit = False
+    #while not quit:
+    valid = False
+    while not valid:
+        #play song
+        if num == "1": 
+            valid = True
+            play_song_on_playlist(playlist_id, user)
+        #sort by 
+        elif num == "2":
+            valid = True
+            playsong.play_playlistbyid(user, playlist_id)
+        elif num == "3": 
+            valid = True
+            sort_playlist(playlist_id)
+        #add a song to the playlist
+        elif num == "4":
+            valid = True
+            insert_into_playlist(playlist_id)
+        #delete a song from the playlist
+        elif num == "5": 
+            valid = True
+            remove_song_from_playlist(playlist_id, user)   
+        elif num == "6":
+            valid = True
+            add_album_to_playlist(playlist_id)
+        elif num == "7":
+            remove_album_from_playlist(playlist_id)
+        elif num == "8":
+            #quit = True
+            break
+        elif num == "h" or num == "H":
+            print_options()
+        #got bad input
+        else: 
+            num = input("Incorrect value. Please try again: [1, 2, 3, 4, 5, 6, 7, 8] ")
             #get input for next round if not exiting (THIS NEEDS TO BE ANOTHER WHILE)
             #if(num != "5"):
                 #num = input("(h for options) Enter your selection here: ")
