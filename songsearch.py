@@ -117,6 +117,7 @@ def search_screen():
                 break
             else: 
                 num = input("Incorrect value. Please try again: [1, 2, 3, 4, 5] ")
+                
         if u.keep_asking("Search by another category?"): 
             quit = True
         num = input("Enter your selection here: [1, 2, 3, 4, 5] ")
