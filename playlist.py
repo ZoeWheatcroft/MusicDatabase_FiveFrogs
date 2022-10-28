@@ -71,8 +71,7 @@ def remove_album_from_playlist(playlist_id):
                 print("There are no songs in this album, please try again.")
         elif len(album) == 0:
             print("There is no album with this name")
-        if(u.keep_asking("Would you like to try again?")):
-            quit = True
+        quit = u.keep_asking("Would you like to try again?")
 
 """
 Adds an entire album to a playlist
@@ -368,6 +367,7 @@ def playlist_screen(user, playlist_id):
         
 
 if __name__ == '__main__': 
-    user = u.login()
-    see_playlist(user)
+    #user = u.login()
+    #see_playlist(user)
+    remove_album_from_playlist(309397)
     
