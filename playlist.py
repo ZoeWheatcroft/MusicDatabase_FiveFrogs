@@ -200,7 +200,8 @@ def sort_by_name(play_id):
     print("---")
     print("SONGS: ")
     for i in lst:
-        print("Artist Name: %16s | Song Title: %18s | Length (sec): %2d | Album Name: %10s " % (i[0], i[1], i[2], i[3]))
+        length = c.convert_mins(i[2])
+        print("Artist Name: %16s | Song Title: %18s | Length: %10s | Album Name: %10s " % (i[0], i[1], length, i[3]))
     print("---")
 
 def sort_by_artist(play_id): 
@@ -217,7 +218,8 @@ def sort_by_artist(play_id):
     print("---")
     print("SONGS: ")
     for i in lst:
-        print("Artist Name: %16s | Song Title: %18s | Length (sec): %2d | Album Name: %10s " % (i[0], i[1], i[2], i[3]))
+        length = c.convert_mins(i[2])
+        print("Artist Name: %16s | Song Title: %18s | Length: %10s | Album Name: %10s " % (i[0], i[1], length, i[3]))
     print("---")
 
 def sort_by_genre(play_id): 
@@ -235,7 +237,8 @@ def sort_by_genre(play_id):
     print("---")
     print("SONGS: ")
     for i in lst:
-        print("Genre Name: %6s | Artist Name: %16s | Song Title: %18s | Length (sec): %2d | Album Name: %10s " % (i[0], i[1], i[2], i[3], i[4]))
+        length = c.convert_mins(i[3])
+        print("Genre Name: %16s | Artist Name: %16s | Song Title: %18s | Length: %10s | Album Name: %10s " % (i[0], i[1], i[2], length, i[4]))
     print("---")
 
 def sort_by_month(play_id): 
@@ -252,14 +255,15 @@ def sort_by_month(play_id):
     print("---")
     print("SONGS: ")
     for i in lst:
-        print("Artist Name: %16s | Song Title: %18s | Length (sec): %2d | Album Name: %10s | Month: %s" % (i[0], i[1], i[2], i[3], i[4]))
+        length = c.convert_mins(i[2])
+        print("Artist Name: %16s | Song Title: %18s | Length: %10s | Album Name: %14s | Month: %5s" % (i[0], i[1], length, i[3], i[4]))
     print("---")
 
 
 def sort_playlist(playlist_id): 
     quit = False
     while(not quit):
-        inp = input("Sort songs by [1] Song name, [2] Artist name, [3] Genre, [4] Released month ")
+        inp = input("Sort songs by [1] Song name, [2] Artist name, [3] Genre, [4] Released month: ")
         if(inp == "1"):
             sort_by_name(playlist_id)
         elif(inp == "2"): 
