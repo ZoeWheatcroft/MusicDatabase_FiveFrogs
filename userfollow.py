@@ -20,8 +20,7 @@ def follow_user(username):
         else: 
             print("User %s doesn't exist!" % (word))
        
-        if(u.keep_asking("Would you like to follow another user?")):
-            quit = True
+        quit = u.keep_asking("Would you like to follow another user?")
 
 
 def follow_artist(username):
@@ -40,8 +39,7 @@ def follow_artist(username):
         else: 
             print("Artist %s doesn't exist!" % (word))
     
-        if(u.keep_asking("Would you like to follow another artist?")):
-            quit = True
+        quit = u.keep_asking("Would you like to follow another artist?")
 
 
 def unfollow_artist(username):
@@ -55,8 +53,7 @@ def unfollow_artist(username):
         else: 
             print("You do not follow this artist.")
 
-        if(u.keep_asking("Would you like to unfollow another artist?")):
-            quit = True
+        quit = u.keep_asking("Would you like to unfollow another artist?")
 
 
 def unfollow_user(username):
@@ -70,8 +67,7 @@ def unfollow_user(username):
         else: 
             print("You do not follow this user.")
 
-        if(u.keep_asking("Would you like to unfollow another user?")):
-            quit = True
+        quit = u.keep_asking("Would you like to unfollow another user?")
 
 
 def follow_screen(username):

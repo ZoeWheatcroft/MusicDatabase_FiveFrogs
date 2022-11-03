@@ -18,9 +18,8 @@ def search_name():
         if len(lst) > 0: 
             for i in lst: 
                 print("Artist Name: %16s | Song Title: %18s | Length (sec): %2d | Number of plays: %3d | Album Name: %10s " % (i[0], i[1], i[2], i[3], i[4]))
-       
-        if(u.keep_asking("Would you like to search by name again?")):
-            quit = True
+
+        quit = u.keep_asking("Would you like to search by name again?")
     return lst
 
 
@@ -40,8 +39,7 @@ def search_artist():
         if len(lst) > 0: 
             for i in lst: 
                 print("Artist Name: %10s | Song Title: %18s | Length (sec): %2d | Number of plays: %3d | Album Name: %10s " % (i[0], i[1], i[2], i[3], i[4]))
-        if(u.keep_asking("Would you like to search by artist again?")):
-            quit = True
+        quit = u.keep_asking("Would you like to search by artist again?")
     return lst
 
 
@@ -61,8 +59,7 @@ def search_album():
         if len(lst) > 0: 
             for i in lst: 
                 print("Artist Name: %14s | Song Title: %18s | Length (sec): %2d | Number of plays: %3d | Album Name: %10s " % (i[0], i[1], i[2], i[3], i[4]))
-        if(u.keep_asking("Would you like to search by album again?")):
-            quit = True
+        quit = u.keep_asking("Would you like to search by album again?")
     return lst
 
 
@@ -83,8 +80,7 @@ def search_genre():
         if len(lst) > 0: 
             for i in lst: 
                 print("Genre Name: %6s | Artist Name: %14s | Song Title: %18s | Length (sec): %2d | Number of plays: %3d | Album Name: %10s " % (i[0], i[1], i[2], i[3], i[4], i[5]))
-        if(u.keep_asking("Would you like to search by genre again?")):
-            quit = True
+        quit = u.keep_asking("Would you like to search by genre again?")
     return lst
 
 
@@ -117,9 +113,8 @@ def search_screen():
                 break
             else: 
                 num = input("Incorrect value. Please try again: [1, 2, 3, 4, 5] ")
-                
-        if u.keep_asking("Search by another category?"): 
-            quit = True
+            
+        quit = u.keep_asking("Search by another category?")
         num = input("Enter your selection here: [1, 2, 3, 4, 5] ")
 
 
