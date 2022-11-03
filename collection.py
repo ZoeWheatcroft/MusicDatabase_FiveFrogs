@@ -29,8 +29,7 @@ def create_playlist(username):
         print("Playlist called '" + name + "' has been made")
 
         #keep asking if want to create another playlist until valid answer given 
-        if(u.keep_asking("Would you like to create another playlist?")):
-            quit = True
+        quit = u.keep_asking("Would you like to create another playlist?")
 
 
 def convert_mins(secs):
@@ -99,8 +98,7 @@ def rename_playlist(username):
                 print("'%s' renamed to '%s'" % (rename, name))
 
             #keep asking if want to rename another playlist until valid answer given 
-            if(u.keep_asking("Would you like to rename another playlist?")):
-                quit = True
+            quit = u.keep_asking("Would you like to rename another playlist?")
     
 
 def delete_playlist(username):
@@ -132,8 +130,7 @@ def delete_playlist(username):
                 print("'%s' has been deleted" % (delete_name))
 
             #keep asking if want to delete another playlist until valid answer given 
-            if(u.keep_asking("Would you like to delete another playlist?")):
-                quit = True
+            quit = u.keep_asking("Would you like to delete another playlist?")
 
 
 def your_playlist_screen(username):
