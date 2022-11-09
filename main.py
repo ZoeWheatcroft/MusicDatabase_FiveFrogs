@@ -59,8 +59,7 @@ def main():
             else:
                 num = input("Incorrect value. Please try again: [1, 2, 3, 4, 5] ")
 
-        if(u.keep_asking("Do you want to do something else?")):
-            quit = True
+        quit = u.keep_asking("Do you want to do something else?")
 
 
 

@@ -16,8 +16,7 @@ def search_email():
             for i in lst: 
                 print("User Name: %16s | Email: %18s" % (i[0], i[1]))
         
-        if(u.keep_asking("Would you like to search again?")):
-            quit = True
+        quit = u.keep_asking("Would you like to search again?")
     return lst
 
 

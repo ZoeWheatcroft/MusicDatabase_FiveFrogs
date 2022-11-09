@@ -42,13 +42,17 @@ def print_songs(play_id):
 
 
 """
-Sam's stuff, have not read
+Removes an entire album from a playlist, if no such album exists, ask again. 
+
+playlist_id: id of the playlist that is to be edited. 
 """
 def remove_album_from_playlist(playlist_id):
     quit = False
+    print("test31313")
     while(not quit):
-        word = input("What is the name of the album that you would like to remove? (or Q to quit): ")
+        word = input("What is the name of the album that you would like to remove? (Q to quit): ")
         if word.upper()[0] == "Q":
+            quit = True
             break
         # First, find the album with the given name
         album = dbaccess.execute_query("SELECT album_id FROM album WHERE album_name = '%s'"%(word))
@@ -352,6 +356,7 @@ def playlist_screen(user, playlist_id):
             valid = True
             add_album_to_playlist(playlist_id)
         elif num == "7":
+            valid = True
             remove_album_from_playlist(playlist_id)
         elif num == "8":
             #quit = True
