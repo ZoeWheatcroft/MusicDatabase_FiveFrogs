@@ -8,14 +8,17 @@ def top50_header(list_name, dash_len):
     print(line)
 
 # Returns the top 50 most popular songs in the last 30 days (rolling)
-# TODO: THIS JUST GIVES THE TOP 50 OF ALL TIME, NOT THE PAST 30 DAYS NEEDS FIX (probably will have to add more info to our tables)
 def find_top50_recent():
-    lst = dbaccess.execute_query("SELECT s.title, a.artist_name, k.album_name, s.listen_count \
+    lst = dbaccess.execute_query("SELECT s.title, a.artist_name, k.album_name, lc.COUNT \
                                 FROM song AS s \
                                 INNER JOIN artistcreatessong AS a ON(s.song_id = a.song_id) \
                                 INNER JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
-                                INNER JOIN album as k ON (t.album_id = k.album_id) \
-                                ORDER BY s.listen_count DESC \
+                                INNER JOIN album AS k ON (t.album_id = k.album_id) \
+                                INNER JOIN (SELECT song_id, COUNT(*) \
+                                            FROM userplayssong AS up \
+                                            WHERE up.play_history > (current_date - INTERVAL '30 days') \
+                                            GROUP BY song_id) AS lc ON (lc.song_id = s.song_id) \
+                                ORDER BY lc.COUNT DESC \
                                 LIMIT 50")
     dash_len = 120
     list_name = "~*~ Top 50 Charts (Past 30 Days) ~*~"
@@ -82,5 +85,5 @@ def find_top50_friends(username):
     print(line)
 
 if __name__ == '__main__':
-    #find_top50_recent()
-    find_top50_friends("chonig41")
+    find_top50_recent()
+    #find_top50_friends("chonig41")
