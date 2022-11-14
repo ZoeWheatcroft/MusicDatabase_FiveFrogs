@@ -6,7 +6,7 @@ from userfollow import print_list
 def get_collection_num(username):
     
     #get num playlists that user has 
-    get_playlist = "SELECT COUNT playlist_id from usercreatesplaylist where username = %s" % (username)
+    get_playlist = "SELECT COUNT playlist_id from usercreatesplaylist where username = %s"
     num_playlists = dbaccess.execute_query(get_playlist, (username, ))                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
 
     return num_playlists
@@ -15,7 +15,7 @@ def get_collection_num(username):
 def get_follower_num(username):
     
     #get num followers that user has 
-    get_followers = "SELECT COUNT follows from userfollowsuser where username = %s" % (username)
+    get_followers = "SELECT COUNT follows from userfollowsuser where username = %s"
     num_followers = dbaccess.execute_query(get_followers, (username, ))                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
 
     return num_followers
@@ -24,7 +24,7 @@ def get_follower_num(username):
 def get_following_num(username):
     
     #get num users that user is following
-    get_following = "SELECT COUNT username from userfollowsuser where follows = %s" % (username)
+    get_following = "SELECT COUNT username from userfollowsuser where follows = %s" 
     num_following = dbaccess.execute_query(get_following, (username, ))                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
 
     return num_following

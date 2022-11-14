@@ -32,8 +32,8 @@ def find_top5_genres():
                     AND EXTRACT(YEAR FROM s.play_history) = %d\
                     GROUP BY s.song_id, g.genre_name \
                     ORDER BY listen_total DESC \
-                    LIMIT 5" % (curr_month, curr_year)
-    songs_list = dbaccess.execute_query(top_songs)
+                    LIMIT 5"
+    songs_list = dbaccess.execute_query(top_songs, (curr_month, curr_year))
     print_top5(songs_list, curr)
 
 if __name__ == '__main__': 

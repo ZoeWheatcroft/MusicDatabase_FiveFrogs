@@ -9,8 +9,8 @@ def search_email():
         word = input("What is the email of the user that you're searching for? ")
         lst = dbaccess.execute_query("SELECT u.username, u.email \
                 FROM users AS u \
-                WHERE u.email LIKE '%"+word+"%' \
-                ORDER BY u.username ASC")
+                WHERE u.email LIKE %s \
+                ORDER BY u.username ASC", ("%"+word+"%", ))
         print(len(lst), "Users Found!")
         if len(lst) > 0: 
             for i in lst: 
