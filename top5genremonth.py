@@ -9,6 +9,17 @@ def top5_header(dash_len, curr):
     line = "-" * dash_len
     print("%5s | %3s" % ("Rank","Genre"))
     print(line)
+    return line
+
+def print_top5(songs_list, curr):
+    dash_len = 40
+    line = top5_header(dash_len, curr)
+    rank = 0
+    for song in songs_list:
+        rank += 1
+        print("%5s | %3s" % (rank, song[0]))
+
+    print(line)
 
 def find_top5_genres():
     curr = datetime.datetime.now()
@@ -24,16 +35,7 @@ def find_top5_genres():
                     ORDER BY listen_total DESC \
                     LIMIT 5" % (curr_month, curr_year)
     songs_list = dbaccess.execute_query(top_songs)
-
-    dash_len = 40
-    top5_header(dash_len, curr)
-    rank = 0
-    for song in songs_list:
-        rank += 1
-        print("%5s | %3s" % (rank, song[0]))
-
-    line = "-" * dash_len
-    print(line)
+    print_top5(songs_list, curr)
 
 if __name__ == '__main__': 
     find_top5_genres()
