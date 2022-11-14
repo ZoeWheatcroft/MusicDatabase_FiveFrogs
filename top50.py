@@ -55,7 +55,7 @@ def find_top50_friends(username):
                                 INNER JOIN album as k ON (t.album_id = k.album_id) \
                                 INNER JOIN userplayssong as up ON (s.song_id = up.song_id) \
                                 INNER JOIN userfollowsuser as u ON (up.username = u.follows) \
-                                WHERE u.username = '%s' \
+                                WHERE u.username = %s \
                                 ORDER BY s.listen_count DESC \
                                 LIMIT 50", (username, ))
     dash_len = 120
@@ -86,4 +86,4 @@ def find_top50_friends(username):
 
 if __name__ == '__main__':
     find_top50_recent()
-    #find_top50_friends("chonig41")
+    find_top50_friends("chonig41")

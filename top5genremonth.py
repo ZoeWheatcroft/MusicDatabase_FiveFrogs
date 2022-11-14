@@ -28,8 +28,8 @@ def find_top5_genres():
     top_songs = "SELECT g.genre_name, s.song_id, count(*) listen_total \
                     FROM userplayssong AS s \
                     INNER JOIN songhasgenre AS g ON (s.song_id = g.song_id)\
-                    WHERE EXTRACT(MONTH FROM s.play_history) = %d\
-                    AND EXTRACT(YEAR FROM s.play_history) = %d\
+                    WHERE EXTRACT(MONTH FROM s.play_history) = %s \
+                    AND EXTRACT(YEAR FROM s.play_history) = %s \
                     GROUP BY s.song_id, g.genre_name \
                     ORDER BY listen_total DESC \
                     LIMIT 5"
