@@ -3,8 +3,14 @@ from collection import convert_mins
 import useraccess as u
 import dbaccess as d
 
+def fyp_header(dash_len):
+    list_name = "~*~ Recommended Songs ~*~"
+    print_list(list_name, dash_len)
+    line = "-" * dash_len
+    print("%18s | %20s | %8s" % ("Song Title","Artist Name", "Duration"))
+    print(line)
+
 def fyp(username): 
-    print_list("~*~ Recommended Songs ~*~", 90)
     lst = d.execute_query("WITH all_users AS ( \
         SELECT username AS user_id, follows AS friend_id FROM userfollowsuser \
         UNION \
@@ -48,10 +54,17 @@ def fyp(username):
     ORDER BY gh.users, gh.like_count DESC" % (username))
     if( len(lst) == 0 ): 
         print("No play history found! Go play some songs!")
+
+    dash_len = 60
+    fyp_header(dash_len)
     for i in lst: 
         duration = convert_mins(i[2])
-        print("Song Title: %18s | Artist Name: %20s | Length (sec): %2s" % (i[0], i[1], duration))
+        print("%18s | %20s | %8s" % (i[0], i[1], duration))
+    
+    line = "-" * dash_len
+    print(line)
 
 if __name__ == '__main__': 
-    username = u.login()
-    fyp(username)
+    #username = u.login()
+    #fyp(username)
+    fyp("hannakoh")
