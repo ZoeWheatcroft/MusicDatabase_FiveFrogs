@@ -27,8 +27,8 @@ def fyp(username):
     INNER JOIN song AS s ON s.song_id = fp.song_id \
     INNER JOIN artistcreatessong AS a ON s.song_id = a.song_id\
     WHERE p.song_id IS null \
-    AND fp.user_id = '%s' \
-    ORDER BY fp.user_id, fp.like_count DESC" % (username))
+    AND fp.user_id = %s \
+    ORDER BY fp.user_id, fp.like_count DESC", (username, ))
     # if no friends, look at play history & songs in genre
     if len(lst) == 0: 
         lst = d.execute_query("WITH userplaysgenre AS (\
@@ -50,8 +50,8 @@ def fyp(username):
     INNER JOIN song AS s ON s.song_id = gh.song_id \
     INNER JOIN artistcreatessong AS a ON s.song_id = a.song_id\
     WHERE p.song_id IS null \
-    AND gh.users = '%s' \
-    ORDER BY gh.users, gh.like_count DESC" % (username))
+    AND gh.users = %s \
+    ORDER BY gh.users, gh.like_count DESC", (username, ))
     if( len(lst) == 0 ): 
         print("No play history found! Go play some songs!")
 

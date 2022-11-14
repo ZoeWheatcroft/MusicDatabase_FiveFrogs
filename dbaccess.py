@@ -3,7 +3,7 @@ from sshtunnel import SSHTunnelForwarder
 import json
 
 #This executes a statement and then closes the connection. 
-def execute_start(str):
+def execute_start(str, values):
     conn = None
     try:
         json_object = None
@@ -29,7 +29,7 @@ def execute_start(str):
 
             conn = psycopg2.connect(**params)
             curs = conn.cursor()
-            curs.execute(str)
+            curs.execute(str, values)
             #print("Database connection established")
             conn.commit()
     except:
@@ -40,7 +40,7 @@ def execute_start(str):
 
 
 # This returns what is stored in the cursor
-def execute_query(str):
+def execute_query(str, values):
     conn = None
     try:
         json_object = None
@@ -66,7 +66,7 @@ def execute_query(str):
 
             conn = psycopg2.connect(**params)
             curs = conn.cursor()
-            curs.execute(str)
+            curs.execute(str, values)
             lst = []
             for s in curs: 
                 lst.append(s)
