@@ -12,8 +12,8 @@ def search_name():
                 INNER JOIN artistcreatessong AS a ON(s.song_id = a.song_id) \
                 LEFT JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
                 INNER JOIN album as k ON (t.album_id = k.album_id) \
-                WHERE s.title LIKE '%"+word+"%' AND s.song_id = a.song_id \
-                ORDER BY s.title, a.artist_name ASC")
+                WHERE s.title LIKE %s AND s.song_id = a.song_id \
+                ORDER BY s.title, a.artist_name ASC", ("%"+word+"%", ))
         print(len(lst), "Songs found!")
         if len(lst) > 0: 
             for i in lst: 
@@ -33,8 +33,8 @@ def search_artist():
                 INNER JOIN artistcreatessong AS a ON(s.song_id = a.song_id) \
                 LEFT JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
                 INNER JOIN album as k ON (t.album_id = k.album_id) \
-                WHERE a.artist_name = '"+ word +"' AND s.song_id = a.song_id \
-                ORDER BY s.title, a.artist_name ASC")
+                WHERE a.artist_name = %s AND s.song_id = a.song_id \
+                ORDER BY s.title, a.artist_name ASC", (word, ))
         print(len(lst), "Songs found!")
         if len(lst) > 0: 
             for i in lst: 
@@ -53,8 +53,8 @@ def search_album():
                 INNER JOIN artistcreatessong AS a ON(s.song_id = a.song_id) \
                 LEFT JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
                 INNER JOIN album as k ON (t.album_id = k.album_id) \
-                WHERE k.album_name = '"+word+"' AND s.song_id = a.song_id \
-                ORDER BY s.title, a.artist_name ASC")
+                WHERE k.album_name = %s AND s.song_id = a.song_id \
+                ORDER BY s.title, a.artist_name ASC", (word, ))
         print(len(lst), "Songs found!")
         if len(lst) > 0: 
             for i in lst: 
@@ -74,8 +74,8 @@ def search_genre():
                 LEFT JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
                 INNER JOIN album as k ON (t.album_id = k.album_id) \
                 INNER JOIN songhasgenre as g ON (g.song_id = s.song_id) \
-                WHERE g.genre_name = '"+word+"' AND s.song_id = a.song_id \
-                ORDER BY s.title, a.artist_name ASC")
+                WHERE g.genre_name = %s AND s.song_id = a.song_id \
+                ORDER BY s.title, a.artist_name ASC", (word, ))
         print(len(lst), "Songs found!")
         if len(lst) > 0: 
             for i in lst: 
@@ -91,10 +91,11 @@ def search_screen():
     print("  3. By album")
     print("  4. By genre")
     print("  5. Exit")
-    num = input("Enter your selection here: [1, 2, 3, 4, 5] ")
+    #num = input("Enter your selection here: [1, 2, 3, 4, 5] ")
     quit = False
     while not quit:
         valid = False
+        num = input("Enter your selection here: [1, 2, 3, 4, 5] ")
         while not valid:
             if num == "1": 
                 valid = True
@@ -110,12 +111,12 @@ def search_screen():
                 search_genre()
             elif num == "5": 
                 quit = True
-                break
+                return None
             else: 
                 num = input("Incorrect value. Please try again: [1, 2, 3, 4, 5] ")
             
         quit = u.keep_asking("Search by another category?")
-        num = input("Enter your selection here: [1, 2, 3, 4, 5] ")
+        
 
 
 if __name__ == '__main__': 
