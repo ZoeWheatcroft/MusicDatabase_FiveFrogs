@@ -9,7 +9,6 @@ def create_playlist(username):
     quit = False
     while(not quit):
         name = input("What do you want to name your new playlist? ")
-
         #keeps generating new playlist_id if it already exists in table
         unique_bool = False
         while(not unique_bool):
@@ -38,20 +37,33 @@ def convert_mins(secs):
     duration = str(datetime.timedelta(seconds=secs))
     return duration
 
-
-def view_playlist(username):
-    dash_len = 50
+def playlist_header(dash_len): 
     list_name = "~*~ Your Playlists ~*~"
     print_list(list_name, dash_len)
     line = "-" * dash_len
     print("%19s | %15s | %8s" % ("Playlist Name", "Number of Songs", "Duration"))
     print(line)
+    return line 
+
+def print_playlist(username):
+    dash_len = 50
+    line = playlist_header(dash_len)
+
+    all_playlists = view_playlist(username)
+    if not all_playlists: 
+        print("No playlists created")
+    else:
+        for playlist in all_playlists: 
+            duration = convert_mins(playlist[2])
+            print("%19s | %9s songs | %8s" % (playlist[0], playlist[1], duration))
+    print(line)
+
+def view_playlist(username):
     #check if user has any playlists or not 
     show_playlist = "SELECT playlist_id from usercreatesplaylist where username = '%s'" % (username)
-    user_playlists = dbaccess.execute_query(show_playlist)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
-    if not user_playlists: 
-        print("No playlists created")
-    else: 
+    user_playlists = dbaccess.execute_query(show_playlist)       
+    all_playlists = []      
+    if user_playlists: 
         playlist_info = "SELECT p.playlist_name, COUNT(c.song_id), SUM(s.length)\
                             FROM playlist AS p \
                             LEFT JOIN playlistcontainssong AS c ON (p.playlist_id = c.playlist_id)\
@@ -62,12 +74,9 @@ def view_playlist(username):
                             ORDER BY p.playlist_name ASC" % (username)
 
         all_playlists = dbaccess.execute_query(playlist_info)
-        for playlist in all_playlists: 
-            duration = convert_mins(playlist[2])
-            print("%19s | %9s songs | %8s" % (playlist[0], playlist[1], duration))
     
-    print(line)
-    your_playlist_screen(username)
+    return all_playlists
+    
 
 
 def rename_playlist(username):
@@ -132,8 +141,9 @@ def delete_playlist(username):
             #keep asking if want to delete another playlist until valid answer given 
             quit = u.keep_asking("Would you like to delete another playlist?")
 
-
+#put your_playlist_screen in main
 def your_playlist_screen(username):
+    print_playlist(username)
     valid = False
     while not valid:
         print("Your Playlist Options:")
@@ -156,13 +166,31 @@ def your_playlist_screen(username):
         else:
             num = input("Incorrect value. Please try again: [1, 2, 3, 4] ")
 
+def playlist_options(username):
+    valid = False
+    while not valid:
+        print("Playlist Options:")
+        print("  1. View all my playlists")
+        print("  2. Create a playlist")
+        print("  3. Exit")
+        num = input("[1, 2, 3]: ")
+        if num == "1":
+            valid = True
+            your_playlist_screen(username)
+        elif num == "2":
+            valid = True
+            create_playlist(username)
+        elif num == "3":
+            return 0
+        else:
+            num = input("Incorrect value. Please try again: [1, 2, 3] ")
 
 if __name__ == '__main__': 
     #username = useraccess.login()
     #create_playlist("lh5844")
     #create_playlist("hi")
     #view_playlist(username)
-    all_playlists = view_playlist("hannakoh")
+    your_playlist_screen("owreford9")
     
     #rename_playlist("lh5844", all_playlists)
     #delete_playlist("lh5844", all_playlists)

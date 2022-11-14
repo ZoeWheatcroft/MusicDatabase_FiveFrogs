@@ -5,26 +5,6 @@ import collection as p
 import userfollow as f
 import playsong as ps
 import userprofile as frog_rider
-
-
-def playlist_options(user):
-    valid = False
-    while not valid:
-        print("Playlist Options:")
-        print("  1. View all my playlists")
-        print("  2. Create a playlist")
-        print("  3. Exit")
-        num = input("[1, 2, 3]: ")
-        if num == "1":
-            valid = True
-            p.view_playlist(user)
-        elif num == "2":
-            valid = True
-            p.create_playlist(user)
-        elif num == "3":
-            return 0
-        else:
-            num = input("Incorrect value. Please try again: [1, 2, 3] ")
             
 
 def main():
@@ -52,7 +32,7 @@ def main():
                 ps.play_song(user)
             elif num == "3":
                 valid = True
-                playlist_options(user)
+                p.playlist_options(user)
             elif num == "4":
                 valid = True
                 f.follow_screen(user)
@@ -62,7 +42,7 @@ def main():
             elif num == "6":
                 return 0
             else:
-                num = input("Incorrect value. Please try again: [1, 2, 3, 4, 5] ")
+                num = input("Incorrect value. Please try again: [1, 2, 3, 4, 5, 6] ")
 
         quit = u.keep_asking("Do you want to do something else?")
 
