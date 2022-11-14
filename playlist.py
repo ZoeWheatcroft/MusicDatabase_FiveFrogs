@@ -29,7 +29,7 @@ def print_songs(play_id):
                 INNER JOIN album as k ON (t.album_id = k.album_id) \
                 INNER JOIN playlistcontainssong as ps ON (ps.song_id = s.song_id) \
                 INNER JOIN playlist as p ON (p.playlist_id = ps.playlist_id)\
-                WHERE p.playlist_id = '%s' \
+                WHERE p.playlist_id = %s \
                 ORDER BY s.title, a.artist_name ASC", (play_id, ))
     dash_len = 70
     song_header(dash_len)
@@ -100,7 +100,7 @@ def add_album_to_playlist(playlist_id):
                 for song_id in songs:
                     # Insert only songs that do not already exist in the playlist
                     lst = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong \
-                                                WHERE song_id = '%s' AND playlist_id = %s"
+                                                WHERE song_id = %s AND playlist_id = %s"
                                                 , (song_id[0], playlist_id))
                     if len(lst) == 0:
                         dbaccess.execute_start("INSERT INTO playlistcontainssong (playlist_id, song_id) \
@@ -131,9 +131,9 @@ def play_song_on_playlist(p_id, user):
         #get the name of the song that's being played
         s_name = input("Which song? ")
         #get list of songs under that name
-        lst_possible_matches = dbaccess.execute_query("SELECT song_id FROM song WHERE title = %s", s_name)
+        lst_possible_matches = dbaccess.execute_query("SELECT song_id FROM song WHERE title = %s", (s_name, ))
         #check that song is in the play list
-        lst_songsinplaylist = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong WHERE playlist_id = %s", p_id)
+        lst_songsinplaylist = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong WHERE playlist_id = %s", (p_id, ))
         song_in_playlist = False
         s_id_found= 0
         for id in lst_songsinplaylist:
@@ -156,9 +156,9 @@ def insert_into_playlist(p_id):
     quit = False
     while(not quit):
         s_name = input("What's the name of the song you'd like to add? ")
-        s_id = dbaccess.execute_query("SELECT song_id FROM song WHERE title = %s", s_name)
-        sqlstring = "INSERT into playlistcontainssong (playlist_id, song_id) VALUES('" +  str(p_id) + "', '" + str(s_id[0][0]) + "');"
-        dbaccess.execute_start(sqlstring) 
+        s_id = dbaccess.execute_query("SELECT song_id FROM song WHERE title = %s", (s_name, ))
+        sqlstring = "INSERT into playlistcontainssong (playlist_id, song_id) VALUES(%s, %s);"
+        dbaccess.execute_start(sqlstring, (str(p_id), str(s_id[0][0]))) 
         print("inserted song!")
 
         if(u.keep_asking("Would you like to add another song?")):
@@ -171,19 +171,19 @@ def remove_song_from_playlist(p_id, user):
     quit = False
     while(not quit):
         inp = input("What's the name of the song you'd like to remove? ")
-        possible_matches = dbaccess.execute_query("SELECT song_id FROM song WHERE title = '%s'" % inp)
+        possible_matches = dbaccess.execute_query("SELECT song_id FROM song WHERE title = %s", (inp, ))
         if(len(possible_matches) == 0):
             print("That's not a song, sorry! ")
             return 0
         else:
             print("removing song: '%s' ..." % inp)
             #get a list of every song in the playlist
-            playlist_songs = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong where playlist_id = '%s'" % p_id)
+            playlist_songs = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong where playlist_id = %s", (p_id,))
             #check if any of the possible matches are also on the list
             for s in playlist_songs:
                 for p in possible_matches:
                     if(p[0] == s[0]):
-                        dbaccess.execute_start("DELETE FROM playlistcontainssong WHERE song_id = '%s'" % str(p[0]))
+                        dbaccess.execute_start("DELETE FROM playlistcontainssong WHERE song_id = %s", (p[0], ))
         if(u.keep_asking("Would you like to remove another song?")):
             quit = True
 
@@ -197,9 +197,9 @@ def sort_by_name(play_id):
                 LEFT JOIN album as k ON (t.album_id = k.album_id) \
                 LEFT JOIN playlistcontainssong as ps ON (ps.song_id = s.song_id) \
                 LEFT JOIN playlist as p ON (p.playlist_id = ps.playlist_id)\
-                WHERE p.playlist_id = '%s' \
+                WHERE p.playlist_id = %s \
                 GROUP BY a.artist_name, s.title, s.length, k.album_name \
-                ORDER BY s.title ASC"%(play_id))
+                ORDER BY s.title ASC", (play_id, ))
     print("---")
     print("SONGS: ")
     for i in lst:
@@ -215,9 +215,9 @@ def sort_by_artist(play_id):
                 LEFT JOIN album as k ON (t.album_id = k.album_id) \
                 LEFT JOIN playlistcontainssong as ps ON (ps.song_id = s.song_id) \
                 LEFT JOIN playlist as p ON (p.playlist_id = ps.playlist_id)\
-                WHERE p.playlist_id = '%s' \
+                WHERE p.playlist_id = %s \
                 GROUP BY a.artist_name, s.title, s.length, k.album_name\
-                ORDER BY a.artist_name ASC"%(play_id))
+                ORDER BY a.artist_name ASC", (play_id, ))
     print("---")
     print("SONGS: ")
     for i in lst:
@@ -234,9 +234,9 @@ def sort_by_genre(play_id):
                 LEFT JOIN songhasgenre as g ON (g.song_id = s.song_id AND g.song_id = ps.song_id ) \
                 INNER JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
                 LEFT JOIN album as k ON (t.album_id = k.album_id) \
-                WHERE p.playlist_id = '%s' \
+                WHERE p.playlist_id = %s \
                 GROUP BY  g.genre_name, a.artist_name, s.title, s.length, k.album_name\
-                ORDER BY g.genre_name ASC"%(play_id))
+                ORDER BY g.genre_name ASC", (play_id, ))
     print("---")
     print("SONGS: ")
     for i in lst:
@@ -252,9 +252,9 @@ def sort_by_month(play_id):
                 LEFT JOIN album as k ON (t.album_id = k.album_id) \
                 INNER JOIN playlistcontainssong as ps ON (ps.song_id = s.song_id) \
                 LEFT JOIN playlist as p ON (p.playlist_id = ps.playlist_id)\
-                WHERE p.playlist_id = '%s' \
+                WHERE p.playlist_id = %s \
                 GROUP BY a.artist_name, s.title, s.length, k.album_name, s.song_release_date \
-                ORDER BY month ASC"%(play_id))
+                ORDER BY month ASC", (play_id, ))
     print("---")
     print("SONGS: ")
     for i in lst:
@@ -295,7 +295,7 @@ def see_playlist(user):
         # This sql statement checks if the playlist belongs to a user, and whether the playlist even exists.
         lst = dbaccess.execute_query("SELECT p.playlist_id FROM playlist AS p \
             LEFT JOIN usercreatesplaylist AS u ON (u.playlist_id = p.playlist_id)\
-            WHERE p.playlist_name = '%s' AND u.username = '%s'" % (inp, user))
+            WHERE p.playlist_name = %s AND u.username = %s",  (inp, user))
         #should do a check here to see if there's multiple under same name
         # This if checks if the sql statement gets anything. 
         if len(lst) == 1:
