@@ -31,8 +31,28 @@ def get_following_num(username):
 
     return num_following
 
-def get_top_10_artists(username):
+def top5_header(dash_len):
+    list_name = "~*~ Top 10 Artists ~*~" 
+    print_list(list_name, dash_len)
+    line = "-" * dash_len
+    print("%5s | %3s" % ("Rank","Artist"))
+    print(line)
+    return line
 
+def print_top10(username):
+    artist_list = get_top_10_artists(username)
+    dash_len = 40
+    line = top5_header(dash_len)
+    rank = 0
+    if not artist_list: 
+        print("No artists found. Go play some songs!")
+    else: 
+        for artist in artist_list:
+            rank += 1
+            print("%5s | %3s" % (rank, artist[0]))
+    print(line)
+
+def get_top_10_artists(username):
     #get top 10 artists for user by plays
     top_artists = "SELECT a.artist_name, count(*) listen_total \
                     FROM userplayssong AS s \
@@ -42,7 +62,7 @@ def get_top_10_artists(username):
                     ORDER BY listen_total DESC \
                     LIMIT 10" 
     artist_list = dbaccess.execute_query(top_artists, (username, ))
-    print(artist_list)
+    return artist_list
 
 def user_stats(username):
     collection_num = get_collection_num(username)
@@ -54,8 +74,8 @@ def user_stats(username):
 
 def print_options():
     print("  1. Get user stats")
-    print("  2. See your top 10 artists")
-    print("  3. See recommended songs")
+    print("  2. View your top 10 artists")
+    print("  3. View recommended songs")
     print("  4. Exit")
 
 def user_profile_screen(username):
@@ -70,7 +90,7 @@ def user_profile_screen(username):
         #sort by 
         elif num == "2":
             valid = True 
-            get_top_10_artists(username)
+            print_top10(username)
         elif num == "3":
             valid = True 
             foryou.fyp(username)
