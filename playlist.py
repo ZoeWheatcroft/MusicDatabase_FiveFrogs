@@ -19,7 +19,7 @@ def song_header(dash_len):
     print(line)
 
 def print_songs(play_id):
-    lst = dbaccess.execute_query("SELECT playlist_name from playlist where playlist_id = '%s'" % (play_id))
+    lst = dbaccess.execute_query("SELECT playlist_name from playlist where playlist_id = %s", (play_id, ))
     pname = lst[0][0]
     print("Songs in playlist: %s" %(pname))
     lst = dbaccess.execute_query("SELECT a.artist_name, s.title, s.length, k.album_name \
@@ -30,7 +30,7 @@ def print_songs(play_id):
                 INNER JOIN playlistcontainssong as ps ON (ps.song_id = s.song_id) \
                 INNER JOIN playlist as p ON (p.playlist_id = ps.playlist_id)\
                 WHERE p.playlist_id = '%s' \
-                ORDER BY s.title, a.artist_name ASC"%(play_id))
+                ORDER BY s.title, a.artist_name ASC", (play_id, ))
     dash_len = 70
     song_header(dash_len)
     for i in lst:
@@ -55,21 +55,21 @@ def remove_album_from_playlist(playlist_id):
             quit = True
             break
         # First, find the album with the given name
-        album = dbaccess.execute_query("SELECT album_id FROM album WHERE album_name = '%s'"%(word))
+        album = dbaccess.execute_query("SELECT album_id FROM album WHERE album_name = %s", (word, ))
         if len(album) > 1:
             # If there are multiple albums with the given name, ask for the artist of the album
             artist = input("Multiple albums found with that name, please specify artist: ")
-            album = dbaccess.execute_query("SELECT album_id FROM artistcreatesalbum WHERE artist_name = '%s'"%(artist))
+            album = dbaccess.execute_query("SELECT album_id FROM artistcreatesalbum WHERE artist_name = %s", (artist, ))
         if len(album) == 1:
-            songs = dbaccess.execute_query("SELECT song_id FROM albumcontainssong WHERE album_id = '%s'"%(album[0]))
+            songs = dbaccess.execute_query("SELECT song_id FROM albumcontainssong WHERE album_id = %s", (album[0], ))
             # Now remove the songs from the playlist
             if len(songs) != 0:
                 quit = True
                 for song_id in songs:
                     dbaccess.execute_start("DELETE FROM playlistcontainssong \
-                                            WHERE song_id = '%s' \
-                                            AND playlist_id = '%s'" 
-                                            % (song_id[0], playlist_id))
+                                            WHERE song_id = %s \
+                                            AND playlist_id = %s" 
+                                            , (song_id[0], playlist_id))
                 print("Songs removed!")
             else:
                 print("There are no songs in this album, please try again.")
@@ -87,25 +87,25 @@ def add_album_to_playlist(playlist_id):
         if word.upper()[0] == "Q":
             break
         # First, find the album with the given name
-        album = dbaccess.execute_query("SELECT album_id FROM album WHERE album_name = '%s'"%(word))
+        album = dbaccess.execute_query("SELECT album_id FROM album WHERE album_name = %s", (word, ))
         if len(album) > 1:
             # If there are multiple albums with the given name, ask for the artist of the album
             artist = input("Multiple albums found with that name, please specify artist: ")
-            album = dbaccess.execute_query("SELECT album_id FROM artistcreatesalbum WHERE artist_name = '%s'"%(artist))
+            album = dbaccess.execute_query("SELECT album_id FROM artistcreatesalbum WHERE artist_name = %s", (artist, ))
         if len(album) == 1:
-            songs = dbaccess.execute_query("SELECT song_id FROM albumcontainssong WHERE album_id = '%s'"%(album[0]))
+            songs = dbaccess.execute_query("SELECT song_id FROM albumcontainssong WHERE album_id = %s", (album[0],))
             # Now add the songs to the playlist
             if len(songs) != 0:
                 quit = True
                 for song_id in songs:
                     # Insert only songs that do not already exist in the playlist
                     lst = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong \
-                                                WHERE song_id = '%s' AND playlist_id = '%s'"
-                                                % (song_id[0], playlist_id))
+                                                WHERE song_id = '%s' AND playlist_id = %s"
+                                                , (song_id[0], playlist_id))
                     if len(lst) == 0:
                         dbaccess.execute_start("INSERT INTO playlistcontainssong (playlist_id, song_id) \
-                                                VALUES ('%s', '%s')"
-                                                % (playlist_id, song_id[0]))
+                                                VALUES (%s, %s)",
+                                                (playlist_id, song_id[0]))
                 print("Songs added!")
             else:
                 print("There are no songs in this album, please try again.")
@@ -131,9 +131,9 @@ def play_song_on_playlist(p_id, user):
         #get the name of the song that's being played
         s_name = input("Which song? ")
         #get list of songs under that name
-        lst_possible_matches = dbaccess.execute_query("SELECT song_id FROM song WHERE title = '%s'" % s_name)
+        lst_possible_matches = dbaccess.execute_query("SELECT song_id FROM song WHERE title = %s", s_name)
         #check that song is in the play list
-        lst_songsinplaylist = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong WHERE playlist_id = '%s'" % p_id)
+        lst_songsinplaylist = dbaccess.execute_query("SELECT song_id FROM playlistcontainssong WHERE playlist_id = %s", p_id)
         song_in_playlist = False
         s_id_found= 0
         for id in lst_songsinplaylist:
@@ -156,7 +156,7 @@ def insert_into_playlist(p_id):
     quit = False
     while(not quit):
         s_name = input("What's the name of the song you'd like to add? ")
-        s_id = dbaccess.execute_query("SELECT song_id FROM song WHERE title = '%s'" % s_name)
+        s_id = dbaccess.execute_query("SELECT song_id FROM song WHERE title = %s", s_name)
         sqlstring = "INSERT into playlistcontainssong (playlist_id, song_id) VALUES('" +  str(p_id) + "', '" + str(s_id[0][0]) + "');"
         dbaccess.execute_start(sqlstring) 
         print("inserted song!")
