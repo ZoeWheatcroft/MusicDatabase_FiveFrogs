@@ -244,8 +244,8 @@ def sort_by_genre(play_id):
         print("Genre Name: %16s | Artist Name: %16s | Song Title: %18s | Length: %10s | Album Name: %10s " % (i[0], i[1], i[2], length, i[4]))
     print("---")
 
-def sort_by_month(play_id): 
-    lst = dbaccess.execute_query("SELECT a.artist_name, s.title, s.length, k.album_name, EXTRACT(MONTH from s.song_release_date) AS month \
+def sort_by_year_asc(play_id): 
+    lst = dbaccess.execute_query("SELECT a.artist_name, s.title, s.length, k.album_name, EXTRACT(YEAR from s.song_release_date) AS year \
                 FROM song AS s \
                 LEFT JOIN artistcreatessong AS a ON(s.song_id = a.song_id) \
                 INNER JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
@@ -254,31 +254,71 @@ def sort_by_month(play_id):
                 LEFT JOIN playlist as p ON (p.playlist_id = ps.playlist_id)\
                 WHERE p.playlist_id = %s \
                 GROUP BY a.artist_name, s.title, s.length, k.album_name, s.song_release_date \
-                ORDER BY month ASC", (play_id, ))
+                ORDER BY year ASC", (play_id, ))
     print("---")
     print("SONGS: ")
     for i in lst:
         length = c.convert_mins(i[2])
-        print("Artist Name: %16s | Song Title: %18s | Length: %10s | Album Name: %14s | Month: %5s" % (i[0], i[1], length, i[3], i[4]))
+        print("Artist Name: %16s | Song Title: %18s | Length: %10s | Album Name: %14s | Year: %5s" % (i[0], i[1], length, i[3], i[4]))
     print("---")
 
+def sort_by_year_desc(play_id): 
+    lst = dbaccess.execute_query("SELECT a.artist_name, s.title, s.length, k.album_name, EXTRACT(YEAR from s.song_release_date) AS year \
+                FROM song AS s \
+                LEFT JOIN artistcreatessong AS a ON(s.song_id = a.song_id) \
+                INNER JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
+                LEFT JOIN album as k ON (t.album_id = k.album_id) \
+                INNER JOIN playlistcontainssong as ps ON (ps.song_id = s.song_id) \
+                LEFT JOIN playlist as p ON (p.playlist_id = ps.playlist_id)\
+                WHERE p.playlist_id = %s \
+                GROUP BY a.artist_name, s.title, s.length, k.album_name, s.song_release_date \
+                ORDER BY year DESC", (play_id, ))
+    print("---")
+    print("SONGS: ")
+    for i in lst:
+        length = c.convert_mins(i[2])
+        print("Artist Name: %16s | Song Title: %18s | Length: %10s | Album Name: %14s | Year: %5s" % (i[0], i[1], length, i[3], i[4]))
+    print("---")
+
+def sort_by_year(playlist_id):
+    quit = False 
+    while(not quit): 
+        print("How would you like to sort the song's released year?")
+        print("  1. Ascending")
+        print("  2. Descending")
+        print("  3. Go back")
+        num = input("[1, 2, 3]: ")
+        if(num == "1"):
+            sort_by_year_asc(playlist_id)
+        elif(num == "2"):
+            sort_by_year_desc(playlist_id)
+        elif(num == "3"):
+            break
+        else: 
+            print("Incorrect value. Please try again: [1, 2, 3, 4, 5] ")
 
 def sort_playlist(playlist_id): 
     quit = False
     while(not quit):
-        inp = input("Sort songs by [1] Song name, [2] Artist name, [3] Genre, [4] Released month: ")
-        if(inp == "1"):
+        print("How would you like to sort your songs by?")
+        print("  1. Song name")
+        print("  2. Artist name")
+        print("  3. Genre")
+        print("  4. Released year")
+        print("  5. Exit")
+        num = input("[1, 2, 3, 4, 5]: ")
+        if(num == "1"):
             sort_by_name(playlist_id)
-        elif(inp == "2"): 
+        elif(num == "2"): 
             sort_by_artist(playlist_id)
-        elif(inp == "3"): 
+        elif(num == "3"): 
             sort_by_genre(playlist_id)
-        elif(inp == "4"): 
-            sort_by_month(playlist_id)
+        elif(num == "4"): 
+            sort_by_year(playlist_id)
+        elif(num == "5"):
+            break
         else: 
-            print("invalid input")
-        if(u.keep_asking("Would you like to sort your playlist again?")):
-            quit = True
+            print("Incorrect value. Please try again: [1, 2, 3, 4, 5] ")
     
 
 """
@@ -303,8 +343,7 @@ def see_playlist(user):
         else: 
             print("Playlist not found!")
 
-        if(u.keep_asking("Would you like to see another playlist?")):
-            quit = True
+        quit = u.keep_asking("Would you like to see another playlist?")
             
 
 """
@@ -372,7 +411,7 @@ def playlist_screen(user, playlist_id):
         
 
 if __name__ == '__main__': 
-    user = u.login()
-    see_playlist(user)
+    #user = u.login()
+    see_playlist("lh5844")
     #remove_album_from_playlist(309397)
     
