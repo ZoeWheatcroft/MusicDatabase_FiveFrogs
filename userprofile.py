@@ -30,13 +30,30 @@ def get_following_num(username):
 
     return num_following
 
+def get_top_10_artists(username):
 
+    #get top 10 artists for user by plays
+    top_artists = "SELECT a.artist_name, count(*) listen_total \
+                    FROM userplayssong AS s \
+                    INNER JOIN artistcreatessong AS a ON (s.song_id = a.song_id)\
+                    WHERE s.username = '%s'\
+                    GROUP BY s.song_id, a.artist_name \
+                    ORDER BY listen_total DESC \
+                    LIMIT 10" % (username)
+    artist_list = dbaccess.execute_query(top_artists)
+    return artist_list
 
 def user_profile(username):
     collection_num = get_collection_num(username)
     follower_num = get_follower_num(username)
     following_num = get_following_num(username)
+    artist_list = get_top_10_artists(username)
     print("You have " + collection_num + " playlists")
     print("You have " + follower_num + " different followers")
     print("You follow " + following_num + " different users")
     
+    
+
+
+if __name__ == '__main__': 
+    get_top_10_artists("hannakoh")
