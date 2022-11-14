@@ -372,7 +372,7 @@ def playlist_screen(user, playlist_id):
         
 
 if __name__ == '__main__': 
-    #user = u.login()
-    #see_playlist(user)
-    remove_album_from_playlist(309397)
+    user = u.login()
+    see_playlist(user)
+    #remove_album_from_playlist(309397)
     
