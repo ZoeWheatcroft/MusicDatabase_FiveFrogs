@@ -1,12 +1,15 @@
 import dbaccess
 import foryou
 from userfollow import print_list
+import top50
+from top5genremonth import find_top5_genres
+from useraccess import keep_asking
 
 
 def get_collection_num(username):
     
     #get num playlists that user has 
-    get_playlist = "SELECT COUNT playlist_id from usercreatesplaylist where username = %s"
+    get_playlist = "SELECT COUNT(playlist_id) from usercreatesplaylist where username = %s"
     num_playlists = dbaccess.execute_query(get_playlist, (username, ))                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
 
     return num_playlists
@@ -15,7 +18,7 @@ def get_collection_num(username):
 def get_follower_num(username):
     
     #get num followers that user has 
-    get_followers = "SELECT COUNT follows from userfollowsuser where username = %s"
+    get_followers = "SELECT COUNT(follows) from userfollowsuser where username = %s"
     num_followers = dbaccess.execute_query(get_followers, (username, ))                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
 
     return num_followers
@@ -24,7 +27,7 @@ def get_follower_num(username):
 def get_following_num(username):
     
     #get num users that user is following
-    get_following = "SELECT COUNT username from userfollowsuser where follows = %s" 
+    get_following = "SELECT COUNT(username) from userfollowsuser where follows = %s" 
     num_following = dbaccess.execute_query(get_following, (username, ))                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
 
     return num_following
@@ -70,42 +73,57 @@ def user_stats(username):
     collection_num = get_collection_num(username)
     follower_num = get_follower_num(username)
     following_num = get_following_num(username)
-    print("You have " + collection_num + " playlists")
-    print("You have " + follower_num + " different followers")
-    print("You follow " + following_num + " different users")
+    print("You have " + str(collection_num[0][0]) + " playlists")
+    print("You have " + str(follower_num[0][0]) + " different followers")
+    print("You follow " + str(following_num[0][0]) + " different users")
 
 
 def print_options():
     print("  1. Get user stats")
     print("  2. View your top 10 artists")
-    print("  3. View recommended songs")
-    print("  4. Exit")
+    print("  3. View the top 50 songs amongst your friends")
+    print("  4. View the top 50 songs in the past 30 days")
+    print("  5. View the top 5 genres in the past month")
+    print("  6. View recommended songs")
+    print("  7. Exit")
 
 
 def user_profile_screen(username):
-    print_options()
-    num = input("[1, 2, 3, 4]: ")
-    valid = False
-    while not valid:
-        #play song
-        if num == "1": 
-            valid = True
-            user_stats(username)
-        #sort by 
-        elif num == "2":
-            valid = True 
-            print_top10(username)
-        elif num == "3":
-            valid = True 
-            foryou.fyp(username)
-        elif num == "4":
-            #quit = True
-            break
-        elif num == "h" or num == "H":
-            print_options()
-        #got bad input
-        else: 
-            num = input("Incorrect value. Please try again: [1, 2, 3, 4] ")
+    quit = False
+    while not quit:
+        print_options()
+        num = input("[1, 2, 3, 4, 5, 6, 7]: ")
+        valid = False
+        while not valid:
+            #play song
+            if num == "1": 
+                valid = True
+                user_stats(username)
+            #sort by 
+            elif num == "2":
+                valid = True 
+                print_top10(username)
+            elif num == "3": 
+                valid = True
+                top50.find_top50_friends(username)
+            elif num == "4": 
+                valid = True
+                top50.find_top50_recent()
+            elif num == "5": 
+                valid = True
+                find_top5_genres()
+            elif num == "6":
+                valid = True 
+                foryou.fyp(username)
+            elif num == "7":
+                #quit = True
+                break
+            elif num == "h" or num == "H":
+                print_options()
+            #got bad input
+            else: 
+                num = input("Incorrect value. Please try again: [1, 2, 3, 4, 5, 6, 7] ")
+            quit = keep_asking("Do you want to do something else?")
     return
 
 
