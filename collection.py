@@ -15,15 +15,15 @@ def create_playlist(username):
             random_id = r.randint(1, 9999) 
             playlist_id = int('%i%i' % (30,random_id))
     
-            sql_check = "SELECT playlist_id FROM playlist WHERE playlist_id = '%s'" % (playlist_id)
-            check_unique = dbaccess.execute_query(sql_check)
+            sql_check = "SELECT playlist_id FROM playlist WHERE playlist_id = %s" 
+            check_unique = dbaccess.execute_query(sql_check, (playlist_id,))
             if not check_unique:
                 unique_bool = True
     
-        insert_playlist = "INSERT into playlist (playlist_id, playlist_name) VALUES('%s', '%s')" % (playlist_id, name) 
-        dbaccess.execute_start(insert_playlist)
-        insert_creates = "INSERT into usercreatesplaylist (username, playlist_id) VALUES('%s', '%s')" % (username, playlist_id) 
-        dbaccess.execute_start(insert_creates)
+        insert_playlist = "INSERT into playlist (playlist_id, playlist_name) VALUES(%s, %s)" 
+        dbaccess.execute_start(insert_playlist, (playlist_id, name))
+        insert_creates = "INSERT into usercreatesplaylist (username, playlist_id) VALUES(%s, %s)" 
+        dbaccess.execute_start(insert_creates, (username, playlist_id))
 
         print("Playlist called '" + name + "' has been made")
 
@@ -60,8 +60,8 @@ def print_playlist(username):
 
 def view_playlist(username):
     #check if user has any playlists or not 
-    show_playlist = "SELECT playlist_id from usercreatesplaylist where username = '%s'" % (username)
-    user_playlists = dbaccess.execute_query(show_playlist)       
+    show_playlist = "SELECT playlist_id from usercreatesplaylist where username = %s" 
+    user_playlists = dbaccess.execute_query(show_playlist, (username,))       
     all_playlists = []      
     if user_playlists: 
         playlist_info = "SELECT p.playlist_name, COUNT(c.song_id), SUM(s.length)\
@@ -69,19 +69,19 @@ def view_playlist(username):
                             LEFT JOIN playlistcontainssong AS c ON (p.playlist_id = c.playlist_id)\
                             LEFT JOIN song AS s ON (s.song_id = c.song_id)\
                             LEFT JOIN usercreatesplaylist AS u on (p.playlist_id = u.playlist_id) \
-                            WHERE u.username = '%s'\
+                            WHERE u.username = %s \
                             GROUP BY p.playlist_id \
-                            ORDER BY p.playlist_name ASC" % (username)
+                            ORDER BY p.playlist_name ASC"
 
-        all_playlists = dbaccess.execute_query(playlist_info)
+        all_playlists = dbaccess.execute_query(playlist_info, (username,))
     
     return all_playlists
     
 
 
 def rename_playlist(username):
-    show_playlist = "SELECT playlist_id from usercreatesplaylist where username = '%s'" % (username)
-    user_playlists = dbaccess.execute_query(show_playlist)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+    show_playlist = "SELECT playlist_id from usercreatesplaylist where username = %s"
+    user_playlists = dbaccess.execute_query(show_playlist, (username,))                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
     if not user_playlists: 
         print("Error: No playlists available to rename")
     else: 
@@ -89,8 +89,8 @@ def rename_playlist(username):
         while(not quit):
             rename = input("Which playlist do you want to rename? ")
             #check if that playlist name exists 
-            select_check_exists = "SELECT playlist_name from playlist WHERE playlist_name = '%s'" % (rename)
-            check_exists = dbaccess.execute_query(select_check_exists)
+            select_check_exists = "SELECT playlist_name from playlist WHERE playlist_name = %s" 
+            check_exists = dbaccess.execute_query(select_check_exists, (rename,))
             if not check_exists:
                 print("Error: '%s' does not exist" % (rename))
             else: 
@@ -99,10 +99,11 @@ def rename_playlist(username):
                 select_rename_id = "SELECT p.playlist_id \
                             FROM playlist AS p \
                             LEFT JOIN usercreatesplaylist AS u on (p.playlist_id = u.playlist_id) \
-                            WHERE u.username = '%s' AND p.playlist_name = '%s'" % (username, rename)
-                rename_id = dbaccess.execute_query(select_rename_id)
-                dbaccess.execute_start("UPDATE playlist SET playlist_name = '%s' \
-                                        WHERE playlist_id = '%s'" % (name, rename_id[0][0]))
+                            WHERE u.username = %s AND p.playlist_name = %s" 
+                rename_id = dbaccess.execute_query(select_rename_id, (username, rename))
+                rename_playlist_name = "UPDATE playlist SET playlist_name = %s \
+                                        WHERE playlist_id = %s" 
+                dbaccess.execute_start(rename_playlist_name, (name, rename_id[0][0]))
 
                 print("'%s' renamed to '%s'" % (rename, name))
 
@@ -111,8 +112,8 @@ def rename_playlist(username):
     
 
 def delete_playlist(username):
-    show_playlist = "SELECT playlist_id from usercreatesplaylist where username = '%s'" % (username)
-    user_playlists = dbaccess.execute_query(show_playlist)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+    show_playlist = "SELECT playlist_id from usercreatesplaylist where username = %s" 
+    user_playlists = dbaccess.execute_query(show_playlist, (username,))                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
     if not user_playlists: 
         print("Error: No playlists available to delete")
     else: 
@@ -120,8 +121,8 @@ def delete_playlist(username):
         while(not quit):
             delete_name = input("Which playlist do you want to delete? ")
             #check if that playlist name exists 
-            select_check_exists = "SELECT playlist_name from playlist WHERE playlist_name = '%s'" % (delete_name)
-            check_exists = dbaccess.execute_query(select_check_exists)
+            select_check_exists = "SELECT playlist_name from playlist WHERE playlist_name = %s"
+            check_exists = dbaccess.execute_query(select_check_exists, (delete_name,))
             if not check_exists:
                 print("Error: '%s' does not exist" % (delete_name))
             else: 
@@ -129,12 +130,14 @@ def delete_playlist(username):
                 select_rename_id = "SELECT p.playlist_id \
                             FROM playlist AS p \
                             LEFT JOIN usercreatesplaylist AS u on (p.playlist_id = u.playlist_id) \
-                            WHERE u.username = '%s' AND p.playlist_name = '%s'" % (username, delete_name)
-                rename_id = dbaccess.execute_query(select_rename_id)
-
-                dbaccess.execute_start("DELETE FROM usercreatesplaylist WHERE playlist_id = '%s'" % (rename_id[0][0]))
-                dbaccess.execute_start("DELETE FROM playlistcontainssong WHERE playlist_id = '%s'" % (rename_id[0][0]))
-                dbaccess.execute_start("DELETE FROM playlist WHERE playlist_id = '%s'" % (rename_id[0][0]))
+                            WHERE u.username = '%s' AND p.playlist_name = %s" 
+                rename_id = dbaccess.execute_query(select_rename_id, (username, delete_name))
+                delete_user_playlist_id = "DELETE FROM usercreatesplaylist WHERE playlist_id = %s" 
+                delete_song_playlist_id = "DELETE FROM playlistcontainssong WHERE playlist_id = %s" 
+                delete_play_playstli_id = "DELETE FROM playlist WHERE playlist_id = %s" 
+                dbaccess.execute_start(delete_user_playlist_id, (rename_id[0][0],))
+                dbaccess.execute_start(delete_song_playlist_id, (rename_id[0][0],))
+                dbaccess.execute_start(delete_play_playstli_id, (rename_id[0][0],))
 
                 print("'%s' has been deleted" % (delete_name))
 
