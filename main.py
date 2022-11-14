@@ -4,6 +4,7 @@ import songsearch as s
 import collection as p
 import userfollow as f
 import playsong as ps
+import userprofile as frog_rider
 
 
 def playlist_options(user):
@@ -40,8 +41,9 @@ def main():
             print("  2. Play a song")
             print("  3. View playlist options")
             print("  4. Follow/unfollow a friend")
-            print("  5. Exit")
-            num = input("[1, 2, 3, 4, 5]: ")
+            print("  5. View your profile")
+            print("  6. Exit")
+            num = input("[1, 2, 3, 4, 5, 6]: ")
             if num == "1":
                 valid = True
                 s.search_screen()
@@ -55,6 +57,9 @@ def main():
                 valid = True
                 f.follow_screen(user)
             elif num == "5":
+                valid = True
+                frog_rider.user_profile_screen(user)
+            elif num == "6":
                 return 0
             else:
                 num = input("Incorrect value. Please try again: [1, 2, 3, 4, 5] ")
