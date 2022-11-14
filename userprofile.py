@@ -1,8 +1,4 @@
 import dbaccess
-import useraccess as u
-import random as r
-import datetime
-import playlist as p
 import foryou
 from userfollow import print_list
 
@@ -15,6 +11,7 @@ def get_collection_num(username):
 
     return num_playlists
 
+
 def get_follower_num(username):
     
     #get num followers that user has 
@@ -22,6 +19,7 @@ def get_follower_num(username):
     num_followers = dbaccess.execute_query(get_followers, (username, ))                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
 
     return num_followers
+
 
 def get_following_num(username):
     
@@ -31,6 +29,7 @@ def get_following_num(username):
 
     return num_following
 
+
 def top5_header(dash_len):
     list_name = "~*~ Top 10 Artists ~*~" 
     print_list(list_name, dash_len)
@@ -38,6 +37,7 @@ def top5_header(dash_len):
     print("%5s | %3s" % ("Rank","Artist"))
     print(line)
     return line
+
 
 def print_top10(username):
     artist_list = get_top_10_artists(username)
@@ -52,6 +52,7 @@ def print_top10(username):
             print("%5s | %3s" % (rank, artist[0]))
     print(line)
 
+
 def get_top_10_artists(username):
     #get top 10 artists for user by plays
     top_artists = "SELECT a.artist_name, count(*) listen_total \
@@ -64,6 +65,7 @@ def get_top_10_artists(username):
     artist_list = dbaccess.execute_query(top_artists, (username, ))
     return artist_list
 
+
 def user_stats(username):
     collection_num = get_collection_num(username)
     follower_num = get_follower_num(username)
@@ -72,11 +74,13 @@ def user_stats(username):
     print("You have " + follower_num + " different followers")
     print("You follow " + following_num + " different users")
 
+
 def print_options():
     print("  1. Get user stats")
     print("  2. View your top 10 artists")
     print("  3. View recommended songs")
     print("  4. Exit")
+
 
 def user_profile_screen(username):
     print_options()
@@ -103,6 +107,7 @@ def user_profile_screen(username):
         else: 
             num = input("Incorrect value. Please try again: [1, 2, 3, 4] ")
     return
+
 
 if __name__ == '__main__': 
     user_profile_screen("hannakoh")
