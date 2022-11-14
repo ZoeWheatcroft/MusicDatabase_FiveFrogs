@@ -18,7 +18,6 @@ def print_top5(songs_list, curr):
     for song in songs_list:
         rank += 1
         print("%5s | %3s" % (rank, song[0]))
-
     print(line)
 
 def find_top5_genres():
