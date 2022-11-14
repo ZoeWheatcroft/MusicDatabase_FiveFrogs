@@ -19,7 +19,7 @@ def find_top50_recent():
                                             WHERE up.play_history > (current_date - INTERVAL '30 days') \
                                             GROUP BY song_id) AS lc ON (lc.song_id = s.song_id) \
                                 ORDER BY lc.COUNT DESC \
-                                LIMIT 50")
+                                LIMIT 50", ())
     dash_len = 120
     list_name = "~*~ Top 50 Charts (Past 30 Days) ~*~"
     top50_header(list_name, dash_len)
@@ -57,7 +57,7 @@ def find_top50_friends(username):
                                 INNER JOIN userfollowsuser as u ON (up.username = u.follows) \
                                 WHERE u.username = '%s' \
                                 ORDER BY s.listen_count DESC \
-                                LIMIT 50" % (username))
+                                LIMIT 50", (username, ))
     dash_len = 120
     list_name = "~*~ Top 50 Charts (Among Your Friends) ~*~"
     top50_header(list_name, dash_len)
