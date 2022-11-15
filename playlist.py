@@ -15,14 +15,25 @@ def song_header(dash_len):
     list_name = "~*~ Songs in Playlist ~*~"
     print_list(list_name, dash_len)
     line = "-" * dash_len
-    print("%18s | %18s | %10s | %10s" % ("Artist Name", "Song Title", "Length", "Album Name"))
+    print("%18s | %18s | %10s | %10s" % ("Artist Name", "Song Title", "Duration", "Album Name"))
+    print(line)
+    return line
+
+def print_songs(song_list):
+    dash_len = 80
+    line = song_header(dash_len)
+    if not song_list:
+        print("No songs in playlist")
+    else: 
+        for song in song_list:
+            duration = c.convert_mins(song[2])
+            print("%18s | %18s | %10s | %10s " % (song[0], song[1], duration, song[3]))
     print(line)
 
-def print_songs(play_id):
-    lst = dbaccess.execute_query("SELECT playlist_name from playlist where playlist_id = %s", (play_id, ))
-    pname = lst[0][0]
-    print("Songs in playlist: %s" %(pname))
-    lst = dbaccess.execute_query("SELECT a.artist_name, s.title, s.length, k.album_name \
+def get_songs(play_id):
+    #song_list = dbaccess.execute_query("SELECT playlist_name from playlist where playlist_id = %s", (play_id, ))
+    #pname = song_list[0][0]
+    song_list = dbaccess.execute_query("SELECT a.artist_name, s.title, s.length, k.album_name \
                 FROM song AS s \
                 INNER JOIN artistcreatessong AS a ON(s.song_id = a.song_id) \
                 INNER JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
@@ -31,13 +42,7 @@ def print_songs(play_id):
                 INNER JOIN playlist as p ON (p.playlist_id = ps.playlist_id)\
                 WHERE p.playlist_id = %s \
                 ORDER BY s.title, a.artist_name ASC", (play_id, ))
-    dash_len = 70
-    song_header(dash_len)
-    for i in lst:
-        length = c.convert_mins(i[2])
-        print("%18s | %18s | %10s | %10s " % (i[0], i[1], length, i[3]))
-    line = "-" * dash_len
-    print(line)
+    print_songs(song_list)
 
 
 
@@ -190,7 +195,7 @@ def remove_song_from_playlist(p_id, user):
 
 # Users can sort by song name, artist’s name, genre, and released year
 def sort_by_name(play_id): 
-    lst = dbaccess.execute_query("SELECT a.artist_name, s.title, s.length, k.album_name \
+    song_list = dbaccess.execute_query("SELECT a.artist_name, s.title, s.length, k.album_name \
                 FROM song AS s \
                 LEFT JOIN artistcreatessong AS a ON(s.song_id = a.song_id) \
                 INNER JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
@@ -200,15 +205,10 @@ def sort_by_name(play_id):
                 WHERE p.playlist_id = %s \
                 GROUP BY a.artist_name, s.title, s.length, k.album_name \
                 ORDER BY s.title ASC", (play_id, ))
-    print("---")
-    print("SONGS: ")
-    for i in lst:
-        length = c.convert_mins(i[2])
-        print("Artist Name: %16s | Song Title: %18s | Length: %10s | Album Name: %10s " % (i[0], i[1], length, i[3]))
-    print("---")
+    print_songs(song_list)
 
 def sort_by_artist(play_id): 
-    lst = dbaccess.execute_query("SELECT a.artist_name, s.title, s.length, k.album_name \
+    song_list = dbaccess.execute_query("SELECT a.artist_name, s.title, s.length, k.album_name \
                 FROM song AS s \
                 LEFT JOIN artistcreatessong AS a ON(s.song_id = a.song_id) \
                 INNER JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
@@ -218,12 +218,7 @@ def sort_by_artist(play_id):
                 WHERE p.playlist_id = %s \
                 GROUP BY a.artist_name, s.title, s.length, k.album_name\
                 ORDER BY a.artist_name ASC", (play_id, ))
-    print("---")
-    print("SONGS: ")
-    for i in lst:
-        length = c.convert_mins(i[2])
-        print("Artist Name: %16s | Song Title: %18s | Length: %10s | Album Name: %10s " % (i[0], i[1], length, i[3]))
-    print("---")
+    print_songs(song_list)
 
 def sort_by_genre(play_id): 
     lst = dbaccess.execute_query("SELECT  g.genre_name, a.artist_name, s.title, s.length, k.album_name \
@@ -342,6 +337,7 @@ def see_playlist(user):
             playlist_screen(user, int(str(lst[0][0])))
         else: 
             print("Playlist not found!")
+            #perhaps allow users to see available playlists to select from 
 
         quit = u.keep_asking("Would you like to see another playlist?")
             
@@ -364,7 +360,7 @@ main function
 """
 def playlist_screen(user, playlist_id): 
     #get the playlist name 
-    print_songs(playlist_id)
+    get_songs(playlist_id)
     print_options()
     num = input("[1, 2, 3, 4, 5, 6, 7, 8]: ")
     #get player actions and perform while valid = true
@@ -412,6 +408,6 @@ def playlist_screen(user, playlist_id):
 
 if __name__ == '__main__': 
     #user = u.login()
-    see_playlist("lh5844")
+    see_playlist("hannakoh")
     #remove_album_from_playlist(309397)
     
