@@ -7,7 +7,7 @@ def fyp_header(dash_len):
     list_name = "~*~ Recommended Songs ~*~"
     print_list(list_name, dash_len)
     line = "-" * dash_len
-    print("%18s | %20s | %8s" % ("Song Title","Artist Name", "Duration"))
+    print("%8s | %30s | %25s | %10s " % ("#", "Song Title", "Artist Name", "Duration"))
     print(line)
 
 def fyp(username): 
@@ -28,7 +28,7 @@ def fyp(username):
     INNER JOIN artistcreatessong AS a ON s.song_id = a.song_id\
     WHERE p.song_id IS null \
     AND fp.user_id = %s \
-    ORDER BY fp.user_id, fp.like_count DESC", (username, ))
+    ORDER BY fp.user_id, fp.like_count DESC LIMIT 20", (username, ))
     # if no friends, look at play history & songs in genre
     if len(lst) == 0: 
         lst = d.execute_query("WITH userplaysgenre AS (\
@@ -51,16 +51,29 @@ def fyp(username):
     INNER JOIN artistcreatessong AS a ON s.song_id = a.song_id\
     WHERE p.song_id IS null \
     AND gh.users = %s \
-    ORDER BY gh.users, gh.like_count DESC", (username, ))
+    ORDER BY gh.users, gh.like_count DESC LIMIT 20", (username, ))
     if( len(lst) == 0 ): 
         print("No play history found! Go play some songs!")
 
-    dash_len = 60
+    dash_len = 85
     fyp_header(dash_len)
-    for i in lst: 
+    line = "-" * dash_len
+    print(line)
+    j = 0
+    for i in lst:
+        j += 1
         duration = convert_mins(i[2])
-        print("%18s | %20s | %8s" % (i[0], i[1], duration))
-    
+        song_title = i[0]
+        if len(song_title) > 30:
+            song_title = song_title[:27]
+            song_title += "..."
+        
+        artist_name = i[1]
+        if len(artist_name) > 25:
+            artist_name = artist_name[:22]
+            artist_name += "..."
+
+        print("%8s | %30s | %25s | %10s " % (j, song_title, artist_name, duration))
     line = "-" * dash_len
     print(line)
 
