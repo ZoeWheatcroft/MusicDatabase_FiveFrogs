@@ -24,6 +24,7 @@ def login():
         password = encrypt(password, salt)
         while password != lst[0][1].encode(): 
             password = input("Password incorrect. Please try again: ")
+            password = encrypt(password, salt)
         print("Password successful! Logged in as", username)
         d.execute_start("UPDATE users SET last_access = %s WHERE username = %s", (datetime.datetime.now(), username))
         return username
