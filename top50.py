@@ -48,15 +48,17 @@ def find_top50_recent():
 
 # Returns the top 50 most popular songs among my friends
 def find_top50_friends(username):
-    lst = dbaccess.execute_query("SELECT s.title, a.artist_name, k.album_name, s.listen_count \
+    lst = dbaccess.execute_query("SELECT s.title, a.artist_name, k.album_name, pc.COUNT \
                                 FROM song AS s \
                                 INNER JOIN artistcreatessong AS a ON(s.song_id = a.song_id) \
                                 INNER JOIN artistcreatesalbum AS t ON (a.artist_name = t.artist_name) \
-                                INNER JOIN album as k ON (t.album_id = k.album_id) \
-                                INNER JOIN userplayssong as up ON (s.song_id = up.song_id) \
-                                INNER JOIN userfollowsuser as u ON (up.username = u.follows) \
-                                WHERE u.username = %s \
-                                ORDER BY s.listen_count DESC \
+                                INNER JOIN album AS k ON (t.album_id = k.album_id) \
+                                INNER JOIN (SELECT song_id, COUNT(*) \
+                                            FROM userplayssong AS up \
+                                            INNER JOIN userfollowsuser AS uf ON (uf.username = %s) \
+                                            WHERE (up.username = uf.follows) \
+                                            GROUP BY song_id) AS pc ON (pc.song_id = s.song_id) \
+                                ORDER BY pc.COUNT DESC \
                                 LIMIT 50", (username, ))
     dash_len = 120
     list_name = "~*~ Top 50 Charts (Among Your Friends) ~*~"
@@ -85,5 +87,5 @@ def find_top50_friends(username):
     print(line)
 
 if __name__ == '__main__':
-    find_top50_recent()
-    find_top50_friends("chonig41")
+    #find_top50_recent()
+    find_top50_friends("FiveFrogs11")
