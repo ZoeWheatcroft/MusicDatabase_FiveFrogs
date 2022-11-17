@@ -18,7 +18,7 @@ def get_collection_num(username):
 def get_follower_num(username):
     
     #get num followers that user has 
-    get_followers = "SELECT COUNT(follows) from userfollowsuser where username = %s"
+    get_followers = "SELECT COUNT(follows) from userfollowsuser where follows = %s"
     num_followers = dbaccess.execute_query(get_followers, (username, ))                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
 
     return num_followers
@@ -27,7 +27,7 @@ def get_follower_num(username):
 def get_following_num(username):
     
     #get num users that user is following
-    get_following = "SELECT COUNT(username) from userfollowsuser where follows = %s" 
+    get_following = "SELECT COUNT(username) from userfollowsuser where username = %s" 
     num_following = dbaccess.execute_query(get_following, (username, ))                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
 
     return num_following
@@ -128,4 +128,4 @@ def user_profile_screen(username):
 
 
 if __name__ == '__main__': 
-    user_profile_screen("hannakoh")
+    user_profile_screen("FiveFrogs11")
