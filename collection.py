@@ -130,7 +130,7 @@ def delete_playlist(username):
                 select_rename_id = "SELECT p.playlist_id \
                             FROM playlist AS p \
                             LEFT JOIN usercreatesplaylist AS u on (p.playlist_id = u.playlist_id) \
-                            WHERE u.username = '%s' AND p.playlist_name = %s" 
+                            WHERE u.username = %s AND p.playlist_name = %s" 
                 rename_id = dbaccess.execute_query(select_rename_id, (username, delete_name))
                 delete_user_playlist_id = "DELETE FROM usercreatesplaylist WHERE playlist_id = %s" 
                 delete_song_playlist_id = "DELETE FROM playlistcontainssong WHERE playlist_id = %s" 
