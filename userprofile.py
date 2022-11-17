@@ -33,7 +33,7 @@ def get_following_num(username):
     return num_following
 
 
-def top5_header(dash_len):
+def top10_header(dash_len):
     list_name = "~*~ Top 10 Artists ~*~" 
     print_list(list_name, dash_len)
     line = "-" * dash_len
@@ -45,7 +45,7 @@ def top5_header(dash_len):
 def print_top10(username):
     artist_list = get_top_10_artists(username)
     dash_len = 40
-    line = top5_header(dash_len)
+    line = top10_header(dash_len)
     rank = 0
     if not artist_list: 
         print("No artists found. Go play some songs!")
