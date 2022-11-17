@@ -117,7 +117,7 @@ def user_profile_screen(username):
                 foryou.fyp(username)
             elif num == "7":
                 #quit = True
-                break
+                return 0
             elif num == "h" or num == "H":
                 print_options()
             #got bad input
